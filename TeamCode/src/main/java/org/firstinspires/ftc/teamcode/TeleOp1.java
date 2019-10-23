@@ -17,7 +17,10 @@ public class TeleOp1 extends OpMode {
     DcMotor frontLeft;
     DcMotor backRight;
     DcMotor backLeft;
-    Servo
+    DcMotor raiseArm;
+    Servo extendArm;
+    Servo claw1;
+    Servo claw2;
    // Servo drag1, drag2;
 
    // DcMotor fan;
@@ -46,7 +49,12 @@ public class TeleOp1 extends OpMode {
         frontRight = hardwareMap.dcMotor.get("front right");
         frontLeft = hardwareMap.dcMotor.get("front left");
         backRight = hardwareMap.dcMotor.get("back right");
-        backLeft = hardwareMap.dcMotor.get("back left"); //wheels
+        backLeft = hardwareMap.dcMotor.get("back left");
+        raiseArm = hardwareMap.dcMotor.get("raise arm");
+        extendArm = hardwareMap.servo.get("extend arm");
+        claw1 = hardwareMap.servo.get("claw 1");
+        claw2 = hardwareMap.servo.get("claw 2");
+        //wheels
        // drag1 = hardwareMap.servo.get("drag front");
       //  drag2 = hardwareMap.servo.get("drag back");
        // pulley = hardwareMap.dcMotor.get("pulley"); //pulley for intake
@@ -86,6 +94,11 @@ public class TeleOp1 extends OpMode {
 
         backRight.setPower(bRightPower);
 
+        extendArm.setPower(gamepad1.right_trigger-gamepad1.left_trigger)
+        
+
+
+        //raiseArm.setPower(gamepad1.)
 
 
     /*    if(gamepad1.a){
