@@ -83,6 +83,7 @@ public class TeleOp1 extends OpMode {
         double fRightPower = Range.clip(move - rotation - crabWalk, -1.0, 1.0);
         double bRightPower = Range.clip(move - rotation + crabWalk, -1.0, 1.0);
 
+
         //Assignment of motor power in relation to wheels
         frontLeft.setPower(fLeftPower);
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -90,15 +91,17 @@ public class TeleOp1 extends OpMode {
         backLeft.setPower(bLeftPower );
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        frontRight.setPower(fRightPower );
+        frontRight.setPower(fRightPower);
 
         backRight.setPower(bRightPower);
 
-        extendArm.setPower(gamepad1.right_trigger-gamepad1.left_trigger)
+        if (gamepad1.right_trigger > 0 || gamepad1.left_trigger > 0){
+            extendArm.setPosition(extendArm.getPosition()+gamepad1.right_trigger-gamepad1.left_trigger);
+        }
         
 
 
-        //raiseArm.setPower(gamepad1.)
+        //raiseArm.setPower(gamepad1)
 
 
     /*    if(gamepad1.a){
