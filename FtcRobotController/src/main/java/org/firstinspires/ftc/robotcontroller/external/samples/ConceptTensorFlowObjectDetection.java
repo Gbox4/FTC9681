@@ -77,7 +77,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
     private VuforiaLocalizer vuforia;
 
     /**
-     * {@link #tfod} is the variable we will use to store our instance of the Tensor Flow Object
+     * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
      * Detection engine.
      */
     private TFObjectDetector tfod;
@@ -100,22 +100,12 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()) {
-            /** Activate Tensor Flow Object Detection. */
+            /** Activate TensorFlow Object Detection. */
             if (tfod != null) {
                 tfod.activate();
             }
 
             while (opModeIsActive()) {
-
-                // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
-                // first.
-                initVuforia();
-
-                if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-                    initTfod();
-                } else {
-                    telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-                }
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
@@ -171,11 +161,11 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
-        // Loading trackables is not necessary for the Tensor Flow Object Detection engine.
+        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
     }
 
     /**
-     * Initialize the Tensor Flow Object Detection engine.
+     * Initialize the TensorFlow Object Detection engine.
      */
     private void initTfod() {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
