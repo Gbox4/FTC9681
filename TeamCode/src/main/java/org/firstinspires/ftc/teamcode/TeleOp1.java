@@ -18,9 +18,9 @@ public class TeleOp1 extends OpMode {
     DcMotor backRight;
     DcMotor backLeft;
     DcMotor raiseArm;
-    Servo extendArm;
-    Servo claw1;
-    Servo claw2;
+    CRServo extendArm;
+    CRServo claw1;
+    CRServo claw2;
    // Servo drag1, drag2;
 
    // DcMotor fan;
@@ -51,9 +51,9 @@ public class TeleOp1 extends OpMode {
         backRight = hardwareMap.dcMotor.get("back right");
         backLeft = hardwareMap.dcMotor.get("back left");
         raiseArm = hardwareMap.dcMotor.get("raise arm");
-        extendArm = hardwareMap.servo.get("extend arm");
-        claw1 = hardwareMap.servo.get("claw 1");
-        claw2 = hardwareMap.servo.get("claw 2");
+        extendArm = hardwareMap.crservo.get("extend arm");
+        claw1 = hardwareMap.crservo.get("claw 1");
+        claw2 = hardwareMap.crservo.get("claw 2");
         //wheels
        // drag1 = hardwareMap.servo.get("drag front");
       //  drag2 = hardwareMap.servo.get("drag back");
@@ -95,14 +95,18 @@ public class TeleOp1 extends OpMode {
 
         backRight.setPower(bRightPower);
 
-        if (gamepad1.right_trigger > 0 || gamepad1.left_trigger > 0){
-            extendArm.setPosition(extendArm.getPosition()+gamepad1.right_trigger-gamepad1.left_trigger);
-        }
 
-        if (gamepad1.a){
-            
-        }
-        
+        extendArm.setPower(gamepad1.right_trigger);
+        extendArm.setPower(-gamepad1.left_trigger);
+        /*if (gamepad1.right_trigger > 0 || gamepad1.left_trigger > 0){
+            extendArm.setPower(extendArm.getPower()+gamepad1.right_trigger-gamepad1.left_trigger);
+        }*/
+
+        raiseArm.setPower(-gamepad2.left_stick_y);
+
+        claw1.setPower(gamepad2.right_stick_x);
+
+        claw2.setPower(gamepad2.left_stick_x);
 
 
         //raiseArm.setPower(gamepad1)
