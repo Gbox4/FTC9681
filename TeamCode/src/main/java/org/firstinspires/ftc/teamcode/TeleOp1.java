@@ -18,7 +18,7 @@ public class TeleOp1 extends OpMode {
     DcMotor backRight;
     DcMotor backLeft;
     DcMotor raiseArm;
-    CRServo extendArm;
+    DcMotor extendArm;
     CRServo claw1;
     CRServo claw2;
    // Servo drag1, drag2;
@@ -51,7 +51,7 @@ public class TeleOp1 extends OpMode {
         backRight = hardwareMap.dcMotor.get("back right");
         backLeft = hardwareMap.dcMotor.get("back left");
         raiseArm = hardwareMap.dcMotor.get("raise arm");
-        extendArm = hardwareMap.crservo.get("extend arm");
+        extendArm = hardwareMap.dcMotor.get("extend arm");
         claw1 = hardwareMap.crservo.get("claw 1");
         claw2 = hardwareMap.crservo.get("claw 2");
         //wheels
@@ -96,13 +96,9 @@ public class TeleOp1 extends OpMode {
         backRight.setPower(bRightPower);
 
 
-        extendArm.setPower(gamepad1.right_trigger);
-        extendArm.setPower(-gamepad1.left_trigger);
-        /*if (gamepad1.right_trigger > 0 || gamepad1.left_trigger > 0){
-            extendArm.setPower(extendArm.getPower()+gamepad1.right_trigger-gamepad1.left_trigger);
-        }*/
+        extendArm.setPower(gamepad2.right_trigger-gamepad2.left_trigger);
 
-        raiseArm.setPower(-gamepad2.left_stick_y);
+        raiseArm.setPower(-gamepad1.right_trigger + gamepad1.left_trigger);
 
         claw1.setPower(gamepad2.right_stick_x);
 
