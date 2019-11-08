@@ -17,10 +17,13 @@ public class TeleOp1 extends OpMode {
     DcMotor frontLeft;
     DcMotor backRight;
     DcMotor backLeft;
-    DcMotor raiseArm;
+    DcMotor raiseArm1;
+    DcMotor raiseArm2;
     DcMotor extendArm;
     CRServo claw1;
     CRServo claw2;
+    boolean powerControl = false;
+    double powerGiven =0;
    // Servo drag1, drag2;
 
    // DcMotor fan;
@@ -50,7 +53,8 @@ public class TeleOp1 extends OpMode {
         frontLeft = hardwareMap.dcMotor.get("front left");
         backRight = hardwareMap.dcMotor.get("back right");
         backLeft = hardwareMap.dcMotor.get("back left");
-        raiseArm = hardwareMap.dcMotor.get("raise arm");
+        raiseArm1 = hardwareMap.dcMotor.get("raise arm 1");
+        raiseArm2 = hardwareMap.dcMotor.get("raise arm 2");
         extendArm = hardwareMap.dcMotor.get("extend arm");
         claw1 = hardwareMap.crservo.get("claw 1");
         claw2 = hardwareMap.crservo.get("claw 2");
@@ -75,7 +79,7 @@ public class TeleOp1 extends OpMode {
 
         float move = -gamepad1.left_stick_y;
         float rotation = -gamepad1.right_stick_x;
-        float crabWalk = -gamepad1.left_stick_x;
+        float crabWalk = gamepad1.left_stick_x;
 
         //Wheels: Holonomic drive formula uses values of gamestick position to move
         double fLeftPower = Range.clip(move + rotation + crabWalk, -1.0, 1.0);
@@ -95,14 +99,68 @@ public class TeleOp1 extends OpMode {
 
         backRight.setPower(bRightPower);
 
+        raiseArm1.setDirection(DcMotorSimple.Direction.REVERSE);
+        raiseArm2.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        extendArm.setPower(gamepad2.right_trigger-gamepad2.left_trigger);
 
-        raiseArm.setPower(-gamepad1.right_trigger + gamepad1.left_trigger);
+        if(gamepad2.a){
+            powerControl= true;
+            powerGiven = gamepad2.left_stick_y/2;
+            telemetry.addData("gamepad2.left stick y" , powerGiven);
+            telemetry.update();
 
-        claw1.setPower(gamepad2.right_stick_x);
+        }
+        else if(gamepad2.b){
+            powerControl = false;
+        }
+       // extendArm.setPower(gamepad2.right_trigger-gamepad2.left_trigger);
 
-        claw2.setPower(gamepad2.left_stick_x);
+        //raiseArm.setPower(-gamepad1.right_trigger + gamepad1.left_trigger);
+
+       // claw1.setPower(gamepad2.right_trigger);
+
+      //  claw2.setPower(gamepad2.left_trigger);
+
+        //open and close right claw
+        if(gamepad2.right_trigger > 0){
+            claw1.setPower(-gamepad2.right_trigger); //opens right claw
+        }
+        else if(gamepad2.right_bumper){
+                claw1.setPower(1); //closes right claw
+        }else{
+            claw1.setPower(0);
+        }
+
+        //open and close the left claw
+        if (gamepad2.left_trigger>0){
+            claw2.setPower(gamepad2.left_trigger); //close
+        }
+        else if (gamepad2.left_bumper){
+            claw2.setPower(-1); //close
+
+        }else{
+            claw2.setPower(0);
+        }
+
+
+        extendArm.setPower(-gamepad2.right_stick_y); //extends cascading rail slides
+
+        //to keep the arm in one place by maintaining one power, depending on whether or not a was pressed last
+        if(powerControl){
+           raiseArm1.setPower(powerGiven);
+           raiseArm2.setPower(powerGiven);
+       }
+       else{
+           raiseArm1.setPower(gamepad2.left_stick_y/2);
+           raiseArm2.setPower(gamepad2.left_stick_y/2);
+       }
+
+
+
+
+
+
+
 
 
         //raiseArm.setPower(gamepad1)

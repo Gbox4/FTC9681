@@ -17,6 +17,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
+import org.firstinspires.ftc.teamcode.pickUpState; //necessary
+import org.firstinspires.ftc.teamcode.timeState; //necessar
 
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -31,22 +33,21 @@ import java.util.Locale;
 
 import static java.lang.Thread.sleep;
 
-@Autonomous(name = "auto2", group = "Iterative OpMode")
+@Autonomous(name = "AutoFoundation", group = "Iterative OpMode")
 
-public class Autonomous2 extends OpMode {
+public class AutonomousFoundation extends OpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
     CRServo claw1, claw2;
-   // Servo /*pickUp1, pickUp2,*/ drag1, drag2;
+    Servo drag1, drag2;
+    // Servo /*pickUp1, pickUp2,*/ drag1, drag2;
     //  ModernRoboticsI2cRangeSensor SenseFront, SenseLeft, SenseRight,SenseFront2;// not sure which ones will be used
 
-    timeState forward1;
-    extendArmState extend;
-    CRServoState close;
-    extendArmState retract;
-    timeState rightTurn;
-    timeState forward2;
-    CRServoState open;
+    timeState rightStrafe1;
+    pickUpState down;
+    timeState leftStrafe1;
     timeState backwards1;
+    pickUpState up;
+    timeState forward1;
 
     private StateMachine machine;
 
@@ -71,27 +72,37 @@ public class Autonomous2 extends OpMode {
         claw2=hardwareMap.crservo.get("claw 2");
         extendArm=hardwareMap.dcMotor.get("extend arm");
 
+        drag1= hardwareMap.servo.get("drag front");
+        drag2= hardwareMap.servo.get ("drag back");
+
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        //The cells of the array of Motor
         motors.add(frontLeft);
         motors.add(frontRight);
         motors.add(backLeft);
         motors.add(backRight);
 
+        servoDrag.add(drag1);
+        servoDrag.add(drag2);
+
         crServos.add(claw1);
         crServos.add(claw2);
 
-        forward1 = new timeState(1000, .5, motors, "forward");
-        extend = new extendArmState (3000, 1.0, extendArm);
-        close = new CRServoState(1500, .5,.5,crServos);
-        retract = new extendArmState(3000,-1.0,extendArm);
-        rightTurn = new timeState(1000, .5, motors, "turnRight");
+        rightStrafe1 = new timeState(1000, 1, motors, "strafeRight");
+        down = new pickUpState (.5, .5, servoDrag, 10);
+        leftStrafe1 = new timeState(1000, 1, motors, "strafeLeft");
+        backwards1 = new timeState(2000, 1, motors, "backward");
+        up = new pickUpState(-1, -1, servoDrag, 10);
+        forward1 = new timeState(3000, 1, motors, "forward");
 
-        forward1.setNextState(extend);
-        extend.setNextState(close);
-        retract.setNextState(rightTurn);
+        rightStrafe1.setNextState(down);
+        down.setNextState(leftStrafe1);
+        leftStrafe1.setNextState(backwards1);
+        backwards1.setNextState(up);
+        up.setNextState(forward1);
+        forward1.setNextState(null);
+
 
 
 
@@ -100,7 +111,7 @@ public class Autonomous2 extends OpMode {
     @Override
     public void start(){
 
-        machine = new StateMachine(forward1);
+        machine = new StateMachine(rightStrafe1);
 
     }
     @Override
@@ -118,3 +129,4 @@ public class Autonomous2 extends OpMode {
 
 
 }
+

@@ -56,8 +56,6 @@ public class pickUpState implements State {
     @Override
     public State update() {
 
-        // if the servos arent at the requested positions, go to the positions. If it takes too long, exit
-
        pickUp1.setPosition(Pos);
 
        pickUp2.setPosition(Pos2);
