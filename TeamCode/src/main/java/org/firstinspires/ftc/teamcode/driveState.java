@@ -90,47 +90,47 @@ public class driveState implements StateMachine.State {
 
         if(newleftBackTarget > leftBack.getCurrentPosition() && newrightBackTarget > rightBack.getCurrentPosition() && newleftFrontTarget > leftFront.getCurrentPosition() && newrightFrontTarget > rightFront.getCurrentPosition() ) {
 
-            if(Movement.equals("left")) {
+            if(Movement == ("left")) {
                 leftBack.setPower(driveSpeed);
                 leftFront.setPower(-driveSpeed);
                 rightBack.setPower(-driveSpeed);
                 rightFront.setPower(driveSpeed);
 
-            } else if(Movement.equals("right")) {
+            } else if(Movement==("right")) {
                 leftBack.setPower(-driveSpeed);
                 leftFront.setPower(driveSpeed);
                 rightBack.setPower(driveSpeed);
                 rightFront.setPower(-driveSpeed);
 
-            }else if(Movement.equals("backwards")) {
+            }else if(Movement==("backwards")) {
                 leftBack.setPower(-driveSpeed);
                 leftFront.setPower(-driveSpeed);
                 rightBack.setPower(-driveSpeed);
                 rightFront.setPower(-driveSpeed);
 
-            }else if(Movement.equals("turnLeft")){
+            }else if(Movement==("turnLeft")){
                 leftBack.setPower(-driveSpeed);
                 leftFront.setPower(-driveSpeed);
                 rightBack.setPower(driveSpeed);
                 rightFront.setPower(driveSpeed);
             }
-            else if(Movement.equals("turnRight")){
+            else if(Movement==("turnRight")){
                 leftBack.setPower(driveSpeed);
                 leftFront.setPower(driveSpeed);
                 rightBack.setPower(-driveSpeed);
                 rightFront.setPower(-driveSpeed);
             }
-            else if (Movement.equals("strafeRight")){
-                leftBack.setPower(driveSpeed);
+            else if (Movement==("strafeRight")){
+                leftBack.setPower(-driveSpeed);
+                leftFront.setPower(driveSpeed);//negative
+                rightBack.setPower(driveSpeed); //negative
+                rightFront.setPower(-driveSpeed);
+            }
+            else if (Movement==("strafeLeft")){
+                leftBack.setPower(driveSpeed);//neg
                 leftFront.setPower(-driveSpeed);
                 rightBack.setPower(-driveSpeed);
-                rightFront.setPower(driveSpeed);
-            }
-            else if (Movement.equals("strafeLeft")){
-                leftBack.setPower(-driveSpeed);
-                leftFront.setPower(driveSpeed);
-                rightBack.setPower(driveSpeed);
-                rightFront.setPower(-driveSpeed);
+                rightFront.setPower(driveSpeed);//neg
             }
             else {
 

@@ -42,12 +42,15 @@ public class AutonomousFoundation extends OpMode {
     // Servo /*pickUp1, pickUp2,*/ drag1, drag2;
     //  ModernRoboticsI2cRangeSensor SenseFront, SenseLeft, SenseRight,SenseFront2;// not sure which ones will be used
 
-    timeState rightStrafe1;
+    driveState rightStrafe1;
     pickUpState down;
-    timeState leftStrafe1;
-    timeState backwards1;
+    timeState nothing;
+    driveState leftStrafe1;
+    timeState nothing1;
+    driveState backwards1;
     pickUpState up;
-    timeState forward1;
+    timeState nothing2;
+    driveState forward1;
 
     private StateMachine machine;
 
@@ -89,18 +92,27 @@ public class AutonomousFoundation extends OpMode {
         crServos.add(claw1);
         crServos.add(claw2);
 
-        rightStrafe1 = new timeState(1000, 1, motors, "strafeRight");
-        down = new pickUpState (.5, .5, servoDrag, 10);
-        leftStrafe1 = new timeState(1000, 1, motors, "strafeLeft");
-        backwards1 = new timeState(2000, 1, motors, "backward");
-        up = new pickUpState(-1, -1, servoDrag, 10);
-        forward1 = new timeState(3000, 1, motors, "forward");
+      rightStrafe1 = new driveState(32, .4, motors, "strafeRight");
+        nothing = new timeState(60000, 0, motors, "forward");
+        down = new pickUpState (.25, .75, servoDrag, 1000);
 
-        rightStrafe1.setNextState(down);
-        down.setNextState(leftStrafe1);
-        leftStrafe1.setNextState(backwards1);
+        leftStrafe1 = new driveState(30, .5, motors, "strafeLeft");
+        nothing1 = new timeState(5000, 0, motors, "forward");
+        backwards1 = new driveState(16, .5, motors, "backwards");
+        nothing2 = new timeState(5000, 0, motors, "forward");
+        up = new pickUpState(.75, .25, servoDrag, 10);
+        forward1 = new driveState(30, .5, motors, "forward");
+
+        down.setNextState(null);
+
+        rightStrafe1.setNextState(nothing);
+        nothing.setNextState(down);
+        //down.setNextState(leftStrafe1);
+        leftStrafe1.setNextState(nothing1);
+        nothing1.setNextState(backwards1);
         backwards1.setNextState(up);
-        up.setNextState(forward1);
+        up.setNextState(nothing2);
+        nothing2.setNextState(forward1);
         forward1.setNextState(null);
 
 
@@ -111,7 +123,7 @@ public class AutonomousFoundation extends OpMode {
     @Override
     public void start(){
 
-        machine = new StateMachine(rightStrafe1);
+        machine = new StateMachine(down);
 
     }
     @Override
