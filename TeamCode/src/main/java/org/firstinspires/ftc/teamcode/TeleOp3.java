@@ -22,8 +22,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class TeleOp3 extends OpMode {
     DcMotor frontRight;
     DcMotor frontLeft;
-    DcMotor backRight;
-    DcMotor backLeft;
+    ElapsedTime runtime;
+    //DcMotor backRight;
+    //DcMotor backLeft;
     DcMotor raiseArm1;
     DcMotor raiseArm2;
     DcMotor extendArm;
@@ -32,14 +33,14 @@ public class TeleOp3 extends OpMode {
     boolean powerControl = false;
     double powerGiven =0;
     int powerButton;
+    double pos1 = 0.9;
+    double pos2 = 0.1;
     CRServo drag1, drag2;
+    boolean prevx = false;
+    boolean prevy = false;
 
     double armPowerMultiplier = 0.5;
     double clawIncrease = 0.1;
-
-    double getPosition() {
-        return Position;
-    }
 
     // DcMotor fan;
     // Servo marker, servoTouch, servoSlide, servoFlap;
@@ -66,8 +67,8 @@ public class TeleOp3 extends OpMode {
         //    touchSense = hardwareMap.get(DigitalChannel.class, "sensor_digital");
         frontRight = hardwareMap.dcMotor.get("front right");
         frontLeft = hardwareMap.dcMotor.get("front left");
-        backRight = hardwareMap.dcMotor.get("back right");
-        backLeft = hardwareMap.dcMotor.get("back left");
+        //backRight = hardwareMap.dcMotor.get("back right");
+        //backLeft = hardwareMap.dcMotor.get("back left");
         raiseArm1 = hardwareMap.dcMotor.get("raise arm 1");
         raiseArm2 = hardwareMap.dcMotor.get("raise arm 2");
         extendArm = hardwareMap.dcMotor.get("extend arm");
@@ -94,6 +95,7 @@ public class TeleOp3 extends OpMode {
     public void loop() {
         //In place of motor power, gamestick position is used determined by the controller
 
+        /*
         float move = -gamepad1.left_stick_y;
         float rotation = -gamepad1.right_stick_x;
         float crabWalk = gamepad1.left_stick_x;
@@ -104,17 +106,22 @@ public class TeleOp3 extends OpMode {
         double fRightPower = Range.clip(move - rotation - crabWalk, -1.0, 1.0);
         double bRightPower = Range.clip(move - rotation + crabWalk, -1.0, 1.0);
 
+         */
+
+        frontRight.setPower(gamepad1.right_stick_y/powerButton);
+        frontLeft.setPower(gamepad1.left_stick_y/powerButton);
+
 
         //Assignment of motor power in relation to wheels
-        frontLeft.setPower(fLeftPower/powerButton);
+        //frontLeft.setPower(fLeftPower/powerButton);
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        backLeft.setPower(bLeftPower/powerButton);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        //backLeft.setPower(bLeftPower/powerButton);
+        //backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        frontRight.setPower(fRightPower/powerButton);
+        //frontRight.setPower(fRightPower/powerButton);
 
-        backRight.setPower(bRightPower/powerButton);
+        //backRight.setPower(bRightPower/powerButton);
 
         raiseArm1.setDirection(DcMotorSimple.Direction.REVERSE);
         raiseArm2.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -160,19 +167,50 @@ public class TeleOp3 extends OpMode {
         }*/
 
         //More buttons for drivers - claw servos go down together
-        if (gamepad2.x){
-            claw1.setPosition(getPosition()+ clawIncrease);
-            claw2.setPosition(getPosition() - clawIncrease);
+      /*  if (gamepad2.x){
+            claw1.setPosition(claw1.getPosition()+ clawIncrease);
 
         }
         else if (gamepad2.y){
-            claw1.setPosition(getPosition()- clawIncrease);
-            claw2.setPosition(getPosition() + clawIncrease);
+            claw1.setPosition(claw1.getPosition()- clawIncrease);
+        }
+
+
+        if (gamepad2.right_bumper){
+            claw2.setPosition(claw2.getPosition() - clawIncrease);
+        }
+        else if (gamepad2.left_bumper){
+            claw2.setPosition(claw2.getPosition() + clawIncrease);
         }
         else{
-            claw1.setPosition(getPosition());
-            claw2.setPosition(getPosition()); //does this work? we have no idea???
+            claw2.setPosition(claw2.getPosition());
+        }*/
+        if(gamepad2.x&& !prevx){
+            prevx=true;
+            pos1+= .1;
         }
+        else{
+            prevx=false;
+        }
+
+        if(gamepad2.y&& !prevy){
+            prevy=true;
+            pos1-= .1;
+        }
+        else{
+            prevy=false;
+        }
+
+
+        if(gamepad2.left_bumper){
+            pos2 += .1;
+        }
+        if(gamepad2.right_bumper){
+            pos2 -= .1;
+        }
+
+      claw1.setPosition(pos1);
+      claw2.setPosition(pos2);
 
 
         extendArm.setPower(-gamepad2.right_stick_y); //extends cascading rail slides
@@ -200,8 +238,8 @@ public class TeleOp3 extends OpMode {
         }
 
 
-        raiseArm1.setPower((gamepad2.left_stick_y*armPowerMultiplier)-0.27);
-        raiseArm2.setPower((gamepad2.left_stick_y*armPowerMultiplier)-0.27);
+        raiseArm1.setPower((gamepad2.left_stick_y*armPowerMultiplier));
+        raiseArm2.setPower((gamepad2.left_stick_y*armPowerMultiplier));
         // }
         if(gamepad1.a){
             drag1.setPower(.5);
