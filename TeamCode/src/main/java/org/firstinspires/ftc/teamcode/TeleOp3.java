@@ -18,8 +18,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name ="TeleOp2", group = "TeleOP")
-public class TeleOp2 extends OpMode {
+@TeleOp(name ="TeleOp3", group = "TeleOP")
+public class TeleOp3 extends OpMode {
     DcMotor frontRight;
     DcMotor frontLeft;
     DcMotor backRight;
@@ -27,14 +27,19 @@ public class TeleOp2 extends OpMode {
     DcMotor raiseArm1;
     DcMotor raiseArm2;
     DcMotor extendArm;
-    CRServo claw1;
-    CRServo claw2;
+    Servo claw1;
+    Servo claw2;
     boolean powerControl = false;
     double powerGiven =0;
     int powerButton;
     CRServo drag1, drag2;
 
     double armPowerMultiplier = 0.5;
+    double clawIncrease = 0.1;
+
+    double getPosition() {
+        return Position;
+    }
 
     // DcMotor fan;
     // Servo marker, servoTouch, servoSlide, servoFlap;
@@ -66,8 +71,8 @@ public class TeleOp2 extends OpMode {
         raiseArm1 = hardwareMap.dcMotor.get("raise arm 1");
         raiseArm2 = hardwareMap.dcMotor.get("raise arm 2");
         extendArm = hardwareMap.dcMotor.get("extend arm");
-        claw1 = hardwareMap.crservo.get("claw 1");
-        claw2 = hardwareMap.crservo.get("claw 2");
+        claw1 = hardwareMap.servo.get("claw 1");
+        claw2 = hardwareMap.servo.get("claw 2");
         //wheels
         drag1 = hardwareMap.crservo.get("drag front");
         drag2 = hardwareMap.crservo.get("drag back");
@@ -134,8 +139,8 @@ public class TeleOp2 extends OpMode {
         //  claw2.setPower(gamepad2.left_trigger);
 
         //open and close right claw
-        if(gamepad2.right_trigger > 0){
-            claw1.setPower(-gamepad2.right_trigger); //opens right claw
+        /*if(gamepad2.right_trigger > 0){
+            claw1.setPosition(-gamepad2.right_trigger); //opens right claw
         }
         else if(gamepad2.right_bumper){
             claw1.setPower(1); //closes right claw
@@ -152,21 +157,21 @@ public class TeleOp2 extends OpMode {
 
         }else{
             claw2.setPower(0);
-        }
+        }*/
 
         //More buttons for drivers - claw servos go down together
         if (gamepad2.x){
-            claw1.setPower(-1);
-            claw2.setPower(1);
+            claw1.setPosition(getPosition()+ clawIncrease);
+            claw2.setPosition(getPosition() - clawIncrease);
 
         }
         else if (gamepad2.y){
-            claw1.setPower(1);
-            claw2.setPower(-1);
+            claw1.setPosition(getPosition()- clawIncrease);
+            claw2.setPosition(getPosition() + clawIncrease);
         }
         else{
-            claw1.setPower(0);
-            claw2.setPower(0);
+            claw1.setPosition(getPosition());
+            claw2.setPosition(getPosition()); //does this work? we have no idea???
         }
 
 
@@ -195,13 +200,13 @@ public class TeleOp2 extends OpMode {
         }
 
 
-        raiseArm1.setPower((gamepad2.left_stick_y*armPowerMultiplier)-.27);
+        raiseArm1.setPower((gamepad2.left_stick_y*armPowerMultiplier)-0.27);
         raiseArm2.setPower((gamepad2.left_stick_y*armPowerMultiplier)-0.27);
-       // }
+        // }
         if(gamepad1.a){
             drag1.setPower(.5);
         }
-       else if(gamepad1.b){
+        else if(gamepad1.b){
             drag1.setPower(-.5);
         }
 
