@@ -22,7 +22,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class TeleOp3 extends OpMode {
     DcMotor frontRight;
     DcMotor frontLeft;
-    ElapsedTime runtime;
+
+    double benTime=0;
     //DcMotor backRight;
     //DcMotor backLeft;
     DcMotor raiseArm1;
@@ -114,7 +115,8 @@ public class TeleOp3 extends OpMode {
 
         //Assignment of motor power in relation to wheels
         //frontLeft.setPower(fLeftPower/powerButton);
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //backLeft.setPower(bLeftPower/powerButton);
         //backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -185,20 +187,14 @@ public class TeleOp3 extends OpMode {
         else{
             claw2.setPosition(claw2.getPosition());
         }*/
-        if(gamepad2.x&& !prevx){
-            prevx=true;
+        if(gamepad2.x&& getRuntime()-benTime >.25){
+            benTime = getRuntime();
             pos1+= .1;
         }
-        else{
-            prevx=false;
-        }
 
-        if(gamepad2.y&& !prevy){
-            prevy=true;
+        if(gamepad2.y&& getRuntime()-benTime >.25){
             pos1-= .1;
-        }
-        else{
-            prevy=false;
+            benTime= getRuntime();
         }
 
 
