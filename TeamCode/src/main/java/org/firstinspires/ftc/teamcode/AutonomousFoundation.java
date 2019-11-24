@@ -109,6 +109,7 @@ public class AutonomousFoundation extends OpMode {
         rightStrafe1.setNextState(down);
         down.setNextState(leftStrafe1);
         leftStrafe1.setNextState(null);
+        
 
         /*rightStrafe1.setNextState(down);
         down.setNextState(null);*/
