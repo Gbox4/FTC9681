@@ -63,7 +63,7 @@ public class CRServoState implements State {
             return this;
 
         }
-            if (Time <= mRuntime.milliseconds()) {
+            if (Time >= mRuntime.milliseconds()) {
                 servo1.setPower(0);
                 servo2.setPower(0);
                 // return NextState;

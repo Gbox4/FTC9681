@@ -93,7 +93,7 @@ public class AutonomousFoundation extends OpMode {
         crServos.add(claw1);
         crServos.add(claw2);
 
-      rightStrafe1 = new driveState(32, .4, motors, "strafeRight");
+        rightStrafe1 = new driveState(32, .6, motors, "strafeRight");
         nothing = new timeState(4000, 0, motors, "forward");
         down = new CRServoState (4000, .25, -.25, servoDrag);
 
@@ -104,17 +104,21 @@ public class AutonomousFoundation extends OpMode {
         up = new CRServoState(1000, -.5, .5, servoDrag);
         forward1 = new driveState(30, .5, motors, "forward");
 
-        
+        rightStrafe1.setNextState(down);
+        down.setNextState(leftStrafe1);
+        leftStrafe1.setNextState(null);
 
-        rightStrafe1.setNextState(nothing);
-        nothing.setNextState(down);
+        /*rightStrafe1.setNextState(down);
+        down.setNextState(null);*/
+
+        /*nothing.setNextState(down);
         down.setNextState(leftStrafe1);
         leftStrafe1.setNextState(nothing1);
         nothing1.setNextState(backwards1);
         backwards1.setNextState(up);
         up.setNextState(nothing2);
         nothing2.setNextState(forward1);
-        forward1.setNextState(null);
+        forward1.setNextState(null);*/
 
         //leftStrafe1.setNextState(null);
 
@@ -126,8 +130,8 @@ public class AutonomousFoundation extends OpMode {
     @Override
     public void start(){
 
+        //machine = new StateMachine(down);
         machine = new StateMachine(rightStrafe1);
-
 
     }
     @Override
