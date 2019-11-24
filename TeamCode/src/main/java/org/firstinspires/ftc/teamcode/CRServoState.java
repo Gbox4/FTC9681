@@ -11,13 +11,18 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.StateMachine; //necessary
 import org.firstinspires.ftc.teamcode.StateMachine.State; //necessary
 import java.util.ArrayList;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+
+
 public class CRServoState implements State {
 
+    Telemetry telemetry;
 
     CRServo servo1, servo2;
     private double Power;
@@ -25,12 +30,12 @@ public class CRServoState implements State {
     private String Movement;
     private State NextState;
 
-    private int Time;
+    private int totalTime;
     ElapsedTime mRuntime = new ElapsedTime();
 
 
     public CRServoState(int time, double power, double power2, ArrayList<CRServo> CRServos) {
-        Time = time;
+        totalTime = time;
         servo1 = CRServos.get(0);
         servo2 = CRServos.get(1);
 
@@ -55,15 +60,15 @@ public class CRServoState implements State {
     public State update() {
 
 
-        while (mRuntime.milliseconds() < Time) {
+        while (mRuntime.milliseconds() < totalTime) {
+
 
             servo1.setPower(Power);
             servo2.setPower(Power2);
-
             return this;
 
         }
-            if (Time >= mRuntime.milliseconds()) {
+            if (mRuntime.milliseconds()>=totalTime) {
                 servo1.setPower(0);
                 servo2.setPower(0);
                 // return NextState;
