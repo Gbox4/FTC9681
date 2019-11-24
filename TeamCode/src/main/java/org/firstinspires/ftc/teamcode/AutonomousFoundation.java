@@ -54,6 +54,7 @@ public class AutonomousFoundation extends OpMode {
 
     private StateMachine machine;
 
+
     ArrayList<Servo> servoPickUp= new ArrayList<Servo>();
 
 
@@ -93,8 +94,8 @@ public class AutonomousFoundation extends OpMode {
         crServos.add(claw2);
 
       rightStrafe1 = new driveState(32, .4, motors, "strafeRight");
-        nothing = new timeState(1000, 0, motors, "forward");
-        down = new CRServoState (4000, .5, -.5, servoDrag);
+        nothing = new timeState(4000, 0, motors, "forward");
+        down = new CRServoState (4000, .25, -.25, servoDrag);
 
         leftStrafe1 = new driveState(30, .5, motors, "strafeLeft");
         nothing1 = new timeState(1000, 0, motors, "forward");
@@ -126,6 +127,7 @@ public class AutonomousFoundation extends OpMode {
     public void start(){
 
         machine = new StateMachine(rightStrafe1);
+
 
     }
     @Override

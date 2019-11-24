@@ -31,6 +31,7 @@ public class TeleOp2 extends OpMode {
     CRServo claw2;
     boolean powerControl = false;
     double powerGiven =0;
+    boolean clamp = false;
     int powerButton;
     CRServo drag1, drag2;
 
@@ -86,12 +87,23 @@ public class TeleOp2 extends OpMode {
 
     }
 
+    private void setRaiseArmPower(float armPower, double multiplier){
+        raiseArm1.setPower(armPower*multiplier);
+        raiseArm2.setPower(armPower*multiplier);
+        return;
+    }
+
     public void loop() {
         //In place of motor power, gamestick position is used determined by the controller
 
         float move = -gamepad1.left_stick_y;
         float rotation = -gamepad1.right_stick_x;
         float crabWalk = gamepad1.left_stick_x;
+
+
+        //For arm raising
+
+        float rawRaiseValue = -gamepad2.left_stick_y;
 
         //Wheels: Holonomic drive formula uses values of gamestick position to move
         double fLeftPower = Range.clip(move + rotation + crabWalk, -1.0, 1.0);
@@ -111,8 +123,8 @@ public class TeleOp2 extends OpMode {
 
         backRight.setPower(bRightPower/powerButton);
 
-        raiseArm1.setDirection(DcMotorSimple.Direction.REVERSE);
-        raiseArm2.setDirection(DcMotorSimple.Direction.FORWARD);
+        raiseArm1.setDirection(DcMotorSimple.Direction.FORWARD);
+        raiseArm2.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         /*if(gamepad2.a){
@@ -134,28 +146,9 @@ public class TeleOp2 extends OpMode {
         //  claw2.setPower(gamepad2.left_trigger);
 
         //open and close right claw
-        if(gamepad2.right_trigger > 0){
-            claw1.setPower(-gamepad2.right_trigger); //opens right claw
-        }
-        else if(gamepad2.right_bumper){
-            claw1.setPower(1); //closes right claw
-        }else{
-            claw1.setPower(0);
-        }
-
-        //open and close the left claw
-        if (gamepad2.left_trigger>0){
-            claw2.setPower(gamepad2.left_trigger); //close
-        }
-        else if (gamepad2.left_bumper){
-            claw2.setPower(-1); //close
-
-        }else{
-            claw2.setPower(0);
-        }
 
         //More buttons for drivers - claw servos go down together
-        if (gamepad2.x){
+        /*if (gamepad2.x){
             claw1.setPower(-1);
             claw2.setPower(1);
 
@@ -167,8 +160,41 @@ public class TeleOp2 extends OpMode {
         else{
             claw1.setPower(0);
             claw2.setPower(0);
+        }*/
+
+
+        if (gamepad2.x){
+            clamp = true;
         }
 
+
+        if (gamepad2.y){
+            claw1.setPower(1);
+            claw2.setPower(-1);
+            clamp = false;
+        }
+        else{
+            claw1.setPower(0);
+            claw2.setPower(0);
+        }
+
+
+        if (clamp){
+            claw1.setPower(-1);
+            claw2.setPower(1);
+        }
+
+
+
+        if (gamepad2.dpad_right){
+            clamp=false;
+            claw1.setPower(1);
+        }
+
+        if (gamepad2.dpad_left){
+            clamp=false;
+            claw1.setPower(-1);
+        }
 
         extendArm.setPower(-gamepad2.right_stick_y); //extends cascading rail slides
 
@@ -187,7 +213,7 @@ public class TeleOp2 extends OpMode {
         else{*/
 
 
-        if (gamepad2.a){
+        /*if (gamepad2.a){
             armPowerMultiplier = 0.5;
         }
         if (gamepad2.b){
@@ -196,14 +222,69 @@ public class TeleOp2 extends OpMode {
 
 
         raiseArm1.setPower((gamepad2.left_stick_y*armPowerMultiplier)-.27);
-        raiseArm2.setPower((gamepad2.left_stick_y*armPowerMultiplier)-0.27);
+        raiseArm2.setPower((gamepad2.left_stick_y*armPowerMultiplier)-0.27);*/
        // }
+
+        //  "Gabe is a total idiot for writing this ^^^ code." -Gabe
+        //  OKAY, lets try and make this arm power thing once and for all.
+
+
+
+
+
+
+
+        // Fast raise arm mode
+        if (gamepad2.right_trigger>0){
+            //If the driver is ftrying to move the arm up:
+            if (rawRaiseValue > 0) {
+                setRaiseArmPower(rawRaiseValue, 0.6);
+            }
+
+            //If the driver is trying to move the arm down:
+            else if (rawRaiseValue < 0) {
+                setRaiseArmPower(0.1f, 0.35);
+            }
+
+            //If the driver is not moving the arm
+            else {
+                setRaiseArmPower(0.23f, 1);
+            }
+        }
+
+
+
+        // Slow raise arm mode
+        else {
+
+
+            //If the driver is trying to move the arm up:
+            if (rawRaiseValue > 0) {
+                setRaiseArmPower(rawRaiseValue, 0.35);
+            }
+
+            //If the driver is trying to move the arm down:
+            else if (rawRaiseValue < 0) {
+                setRaiseArmPower(0f, 1);
+            }
+
+            //If the driver is not moving the arm
+            else {
+                setRaiseArmPower(0.23f, 1);
+            }
+
+        }
+
         if(gamepad1.a){
             drag1.setPower(.5);
         }
-       else if(gamepad1.b){
+        else if(gamepad1.b){
             drag1.setPower(-.5);
         }
+        else{
+            drag1.setPower(0);
+        }
+
 
         if(gamepad1.x){
             drag2.setPower(.5);
@@ -211,6 +292,11 @@ public class TeleOp2 extends OpMode {
         else if(gamepad1.y){
             drag2.setPower(-.5);
         }
+        else{
+            drag2.setPower(0);
+        }
+
+
 
         //raiseArm.setPower(gamepad1)
 

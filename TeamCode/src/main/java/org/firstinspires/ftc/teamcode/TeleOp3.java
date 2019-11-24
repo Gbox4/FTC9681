@@ -22,8 +22,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class TeleOp3 extends OpMode {
     DcMotor frontRight;
     DcMotor frontLeft;
-
-    double benTime=0;
+    ElapsedTime runtime;
     //DcMotor backRight;
     //DcMotor backLeft;
     DcMotor raiseArm1;
@@ -115,8 +114,7 @@ public class TeleOp3 extends OpMode {
 
         //Assignment of motor power in relation to wheels
         //frontLeft.setPower(fLeftPower/powerButton);
-        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //backLeft.setPower(bLeftPower/powerButton);
         //backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -187,14 +185,20 @@ public class TeleOp3 extends OpMode {
         else{
             claw2.setPosition(claw2.getPosition());
         }*/
-        if(gamepad2.x&& getRuntime()-benTime >.25){
-            benTime = getRuntime();
+        if(gamepad2.x&& !prevx){
+            prevx=true;
             pos1+= .1;
         }
+        else{
+            prevx=false;
+        }
 
-        if(gamepad2.y&& getRuntime()-benTime >.25){
+        if(gamepad2.y&& !prevy){
+            prevy=true;
             pos1-= .1;
-            benTime= getRuntime();
+        }
+        else{
+            prevy=false;
         }
 
 
@@ -243,12 +247,19 @@ public class TeleOp3 extends OpMode {
         else if(gamepad1.b){
             drag1.setPower(-.5);
         }
+        else{
+            drag1.setPower(0);
+        }
+
 
         if(gamepad1.x){
             drag2.setPower(.5);
         }
         else if(gamepad1.y){
             drag2.setPower(-.5);
+        }
+        else{
+            drag2.setPower(0);
         }
 
         //raiseArm.setPower(gamepad1)
