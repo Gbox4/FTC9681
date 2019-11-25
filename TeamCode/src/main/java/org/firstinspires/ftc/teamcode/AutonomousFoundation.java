@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.drm.DrmStore;
 import android.util.Log;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -44,6 +45,7 @@ public class AutonomousFoundation extends OpMode {
 
     driveState rightStrafe1;
     CRServoState down;
+    clampDriveState clampDrive;
     timeState nothing;
     driveState leftStrafe1;
     timeState nothing1;
@@ -94,22 +96,28 @@ public class AutonomousFoundation extends OpMode {
         crServos.add(claw2);
 
         rightStrafe1 = new driveState(40, .5, motors, "strafeRight");
-        nothing = new timeState(4000, 0, motors, "forward");
+        nothing = new timeState(1000, 0, motors, "forward");
         down = new CRServoState (4000, .25, -.25, servoDrag);
 
         leftStrafe1 = new driveState(40, .5, motors, "strafeLeft");
         nothing1 = new timeState(1000, 0, motors, "forward");
         backwards1 = new driveState(16, .5, motors, "backwards");
         nothing2 = new timeState(5000, 0, motors, "forward");
-        up = new CRServoState(1000, -.5, .5, servoDrag);
+        up = new CRServoState(4000, -.5, .5, servoDrag);
         forward1 = new driveState(30, .5, motors, "forward");
+        clampDrive = new clampDriveState(150,.5,motors,"strafeLeft",.5,-.5,servoDrag);
 
         //down.setNextState(null);
 
+        //up.setNextState(rightStrafe1);
         rightStrafe1.setNextState(down);
-        down.setNextState(leftStrafe1);
-        leftStrafe1.setNextState(null);
-        
+        down.setNextState(nothing);
+        nothing.setNextState(nothing1);
+        nothing1.setNextState(clampDrive);
+        //nothing.setNextState(clampDrive);
+        clampDrive.setNextState(null);
+        //leftStrafe1.setNextState(null);
+
 
         /*rightStrafe1.setNextState(down);
         down.setNextState(null);*/
@@ -152,4 +160,3 @@ public class AutonomousFoundation extends OpMode {
 
 
 }
-
