@@ -27,8 +27,9 @@ public class TeleOp2 extends OpMode {
     DcMotor raiseArm1;
     DcMotor raiseArm2;
     DcMotor extendArm;
-    CRServo claw1;
-    CRServo claw2;
+    Servo claw1;
+    Servo claw2;
+    CRServo wrist;
     boolean powerControl = false;
     double powerGiven =0;
     boolean clamp = false;
@@ -37,24 +38,6 @@ public class TeleOp2 extends OpMode {
 
     double armPowerMultiplier = 0.5;
 
-    // DcMotor fan;
-    // Servo marker, servoTouch, servoSlide, servoFlap;
-    //Servo servoMin;
-    //  CRServo servoSlide;
-
-
-    // DcMotor lift;
-    //  DcMotor MineralLifter;
-   /* double mInt = 0.5;
-    DigitalChannel touchSense;
-    int powerInt = 2;
-    boolean touch;
-    ElapsedTime runTime;
-    long lastCall = 0;
-*/
-    // public TeleOp1() {
-    //    runTime = new ElapsedTime();
-    // }
 
     public void init() {
         //hardware map is for phone
@@ -67,24 +50,11 @@ public class TeleOp2 extends OpMode {
         raiseArm1 = hardwareMap.dcMotor.get("raise arm 1");
         raiseArm2 = hardwareMap.dcMotor.get("raise arm 2");
         extendArm = hardwareMap.dcMotor.get("extend arm");
-        claw1 = hardwareMap.crservo.get("claw 1");
-        claw2 = hardwareMap.crservo.get("claw 2");
-        //wheels
+        claw1 = hardwareMap.servo.get("claw 1");
+        claw2 = hardwareMap.servo.get("claw 2");
         drag1 = hardwareMap.crservo.get("drag front");
         drag2 = hardwareMap.crservo.get("drag back");
-        // pulley = hardwareMap.dcMotor.get("pulley"); //pulley for intake
-     /*   fan = hardwareMap.dcMotor.get("fan");
-        lift = hardwareMap.dcMotor.get("lift"); //lift mechanism
-        MineralLifter = hardwareMap.dcMotor.get("mineralLifter");
-        marker = hardwareMap.servo.get("marker"); //servo for team marker
-        servoTouch = hardwareMap.servo.get("servoTouch");
-        touchSense.setMode(DigitalChannel.Mode.INPUT);
-        servoMin = hardwareMap.servo.get("servoMin");
-        servoSlide = hardwareMap.servo.get("servoSlide");
-        servoFlap = hardwareMap.servo.get("servoFlap");
-        */
-
-
+        wrist = hardwareMap.crservo.get("wrist");
     }
 
     private void setRaiseArmPower(float armPower, double multiplier){
@@ -94,24 +64,24 @@ public class TeleOp2 extends OpMode {
     }
 
     public void loop() {
-        //In place of motor power, gamestick position is used determined by the controller
-
+        //              -----STICK VARIABLES-----
+        //For driving
         float move = -gamepad1.left_stick_y;
-        float rotation = -gamepad1.right_stick_x;
         float crabWalk = gamepad1.left_stick_x;
-
+        float rotation = -gamepad1.right_stick_x;
 
         //For arm raising
-
         float rawRaiseValue = -gamepad2.left_stick_y;
 
+
+
+
+        //              -----WHEEL LOGIC-----
         //Wheels: Holonomic drive formula uses values of gamestick position to move
         double fLeftPower = Range.clip(move + rotation + crabWalk, -1.0, 1.0);
         double bLeftPower = Range.clip(move + rotation - crabWalk, -1.0, 1.0);
         double fRightPower = Range.clip(move - rotation - crabWalk, -1.0, 1.0);
         double bRightPower = Range.clip(move - rotation + crabWalk, -1.0, 1.0);
-
-
         //Assignment of motor power in relation to wheels
         frontLeft.setPower(fLeftPower/powerButton);
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -127,154 +97,17 @@ public class TeleOp2 extends OpMode {
         raiseArm2.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
-        /*if(gamepad2.a){
-            powerControl= true;
-            powerGiven = gamepad2.left_stick_y/3;
-            telemetry.addData("gamepad2.left stick y" , powerGiven);
-            telemetry.update();
 
-        }
-        else if(gamepad2.b){
-            powerControl = false;
-        }*/
-        // extendArm.setPower(gamepad2.right_trigger-gamepad2.left_trigger);
+        //          -----GAME PAD 1-----
 
-        //raiseArm.setPower(-gamepad1.right_trigger + gamepad1.left_trigger);
-
-        // claw1.setPower(gamepad2.right_trigger);
-
-        //  claw2.setPower(gamepad2.left_trigger);
-
-        //open and close right claw
-
-        //More buttons for drivers - claw servos go down together
-        /*if (gamepad2.x){
-            claw1.setPower(-1);
-            claw2.setPower(1);
-
-        }
-        else if (gamepad2.y){
-            claw1.setPower(1);
-            claw2.setPower(-1);
-        }
-        else{
-            claw1.setPower(0);
-            claw2.setPower(0);
-        }*/
-
-
-        if (gamepad2.x){
-            clamp = true;
-        }
-
-
-        if (gamepad2.y){
-            claw1.setPower(1);
-            claw2.setPower(-1);
-            clamp = false;
-        }
-        else{
-            claw1.setPower(0);
-            claw2.setPower(0);
-        }
-
-
-        if (clamp){
-            claw1.setPower(-1);
-            claw2.setPower(1);
-        }
-
-
-
-        if (gamepad2.dpad_right){
-            clamp=false;
-            claw1.setPower(1);
-        }
-
-        if (gamepad2.dpad_left){
-            clamp=false;
-            claw1.setPower(-1);
-        }
-
-        extendArm.setPower(-gamepad2.right_stick_y); //extends cascading rail slides
-
-
+        //              ###SPEED BOOST###
         if(gamepad1.right_trigger>0.1){
             powerButton=1;
         }else{
             powerButton =2;
         }
 
-        //to keep the arm in one place by maintaining one power, depending on whether or not a was pressed last
-      /*  if(powerControl){
-            raiseArm1.setPower(powerGiven);
-            raiseArm2.setPower(powerGiven);
-        }
-        else{*/
-
-
-        /*if (gamepad2.a){
-            armPowerMultiplier = 0.5;
-        }
-        if (gamepad2.b){
-            armPowerMultiplier = 0.2;
-        }
-
-
-        raiseArm1.setPower((gamepad2.left_stick_y*armPowerMultiplier)-.27);
-        raiseArm2.setPower((gamepad2.left_stick_y*armPowerMultiplier)-0.27);*/
-       // }
-
-        //  "Gabe is a total idiot for writing this ^^^ code." -Gabe
-        //  OKAY, lets try and make this arm power thing once and for all.
-
-
-
-
-
-
-
-        // Fast raise arm mode
-        if (gamepad2.right_trigger>0){
-            //If the driver is ftrying to move the arm up:
-            if (rawRaiseValue > 0) {
-                setRaiseArmPower(rawRaiseValue, 0.6);
-            }
-
-            //If the driver is trying to move the arm down:
-            else if (rawRaiseValue < 0) {
-                setRaiseArmPower(0.1f, 0.35);
-            }
-
-            //If the driver is not moving the arm
-            else {
-                setRaiseArmPower(0.23f, 1);
-            }
-        }
-
-
-
-        // Slow raise arm mode
-        else {
-
-
-            //If the driver is trying to move the arm up:
-            if (rawRaiseValue > 0) {
-                setRaiseArmPower(rawRaiseValue, 0.35);
-            }
-
-            //If the driver is trying to move the arm down:
-            else if (rawRaiseValue < 0) {
-                setRaiseArmPower(0f, 1);
-            }
-
-            //If the driver is not moving the arm
-            else {
-                setRaiseArmPower(0.23f, 1);
-            }
-
-        }
-
+        //              ###DRAG SERVOS###
         if(gamepad1.a){
             drag1.setPower(.5);
         }
@@ -284,8 +117,6 @@ public class TeleOp2 extends OpMode {
         else{
             drag1.setPower(0);
         }
-
-
         if(gamepad1.x){
             drag2.setPower(.5);
         }
@@ -298,22 +129,94 @@ public class TeleOp2 extends OpMode {
 
 
 
-        //raiseArm.setPower(gamepad1)
+        //          -----GAME PAD 2-----
 
-
-    /*    if(gamepad1.a){
-            drag1.setPosition(.5);
-
+        //              ###CLAMPS###
+        /*if (gamepad2.x){
+            clamp = true;
         }
-        if(gamepad1.b){
-            drag2.setPosition(.5);
+        if (gamepad2.y){
+            claw1.setPower(1);
+            claw2.setPower(-1);
+            clamp = false;
         }
-        if(gamepad1.y){
-            drag1.setPosition(0);
+        else{
+            claw1.setPower(0);
+            claw2.setPower(0);
         }
-        if(gamepad1.x){
-            drag2.setPosition(1);
+        if (clamp){
+            claw1.setPower(-1);
+            claw2.setPower(1);
         }*/
+
+
+
+        //claw1: 1=open, 0=closed
+        //claw2: 0=open, 1=closed
+
+        //open
+        if (gamepad2.y){
+            claw1.setPosition(0.6);
+            claw2.setPosition(0.4);
+        }
+        //close
+        if (gamepad2.x){
+            claw1.setPosition(0.4);
+            claw2.setPosition(0.6);
+        }
+
+        //              ###ARM EXTENSION###
+
+        extendArm.setPower(-gamepad2.right_stick_y);
+
+        //              ###WRIST###
+
+        if (gamepad2.right_bumper){
+            wrist.setPower(0.5);
+        }
+        else if (gamepad2.left_bumper){
+            wrist.setPower(-0.5);
+        }
+        else {
+            wrist.setPower(0);
+        }
+
+
+        //              ###ARM RAISING###
+
+        // Fast raise arm mode
+        if (gamepad2.right_trigger>0){
+            //If the driver is trying to move the arm up:
+            if (rawRaiseValue > 0) {
+                setRaiseArmPower(rawRaiseValue, 0.6);
+            }
+            //If the driver is trying to move the arm down:
+            else if (rawRaiseValue < 0) {
+                setRaiseArmPower(0.1f, 0.35);
+            }
+            //If the driver is not moving the arm
+            else {
+                setRaiseArmPower(0.23f, 1);
+            }
+        }
+        // Slow raise arm mode
+        else {
+            //If the driver is trying to move the arm up:
+            if (rawRaiseValue > 0) {
+                setRaiseArmPower(rawRaiseValue, 0.35);
+            }
+            //If the driver is trying to move the arm down:
+            else if (rawRaiseValue < 0) {
+                setRaiseArmPower(0f, 1);
+            }
+            //If the driver is not moving the arm
+            else {
+                setRaiseArmPower(0.23f, 1);
+            }
+        }
+
+
+
 
     }
 
