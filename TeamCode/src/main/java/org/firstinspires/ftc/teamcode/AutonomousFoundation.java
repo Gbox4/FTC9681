@@ -38,7 +38,7 @@ import static java.lang.Thread.sleep;
 
 public class AutonomousFoundation extends OpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
-    CRServo claw1, claw2;
+    //CRServo claw1, claw2;
     CRServo drag1, drag2;
     // Servo /*pickUp1, pickUp2,*/ drag1, drag2;
     //  ModernRoboticsI2cRangeSensor SenseFront, SenseLeft, SenseRight,SenseFront2;// not sure which ones will be used
@@ -74,8 +74,8 @@ public class AutonomousFoundation extends OpMode {
         backRight=hardwareMap.dcMotor.get("back right");
         backLeft=hardwareMap.dcMotor.get("back left");
 
-        claw1=hardwareMap.crservo.get("claw 1");
-        claw2=hardwareMap.crservo.get("claw 2");
+        //claw1=hardwareMap.crservo.get("claw 1");
+        //claw2=hardwareMap.crservo.get("claw 2");
         extendArm=hardwareMap.dcMotor.get("extend arm");
 
         drag1= hardwareMap.crservo.get("drag front");
@@ -92,8 +92,8 @@ public class AutonomousFoundation extends OpMode {
         servoDrag.add(drag1);
         servoDrag.add(drag2);
 
-        crServos.add(claw1);
-        crServos.add(claw2);
+        //crServos.add(claw1);
+        //crServos.add(claw2);
 
         rightStrafe1 = new driveState(40, .5, motors, "strafeRight");
         nothing = new timeState(1000, 0, motors, "forward");
