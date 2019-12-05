@@ -53,7 +53,9 @@ public class AutonomousFoundation extends OpMode {
     CRServoState up;
     timeState nothing2;
     driveState forward1;
-
+    clampDriveState leftDrive;
+    clampDriveState backDrive;
+    CRServoState down1;
     private StateMachine machine;
 
 
@@ -97,25 +99,30 @@ public class AutonomousFoundation extends OpMode {
 
         rightStrafe1 = new driveState(40, .5, motors, "strafeRight");
         nothing = new timeState(1000, 0, motors, "forward");
-        down = new CRServoState (4000, .25, -.25, servoDrag);
+        down = new CRServoState (5000, .25, -.25, servoDrag);
+        down1 = new CRServoState(5000, .25, -.25, servoDrag);
 
         leftStrafe1 = new driveState(40, .5, motors, "strafeLeft");
-        nothing1 = new timeState(1000, 0, motors, "forward");
+        nothing1 = new timeState(2000, 0, motors, "forward");
         backwards1 = new driveState(16, .5, motors, "backwards");
         nothing2 = new timeState(5000, 0, motors, "forward");
         up = new CRServoState(4000, -.5, .5, servoDrag);
         forward1 = new driveState(30, .5, motors, "forward");
-        clampDrive = new clampDriveState(150,.5,motors,"strafeLeft",.5,-.5,servoDrag);
-
+        clampDrive = new clampDriveState(50,.5,motors,"strafeLeft",.5,-.5,servoDrag);
+        leftDrive = new clampDriveState(5,.5,motors, "turnRight",.5,-.5,servoDrag);
+      //  backDrive = new clampDriveState(10,.5,motors,"backward",.5,-.5,servoDrag);
         //down.setNextState(null);
 
         //up.setNextState(rightStrafe1);
         rightStrafe1.setNextState(down);
-        down.setNextState(nothing);
+        down.setNextState(down1);
+        down1.setNextState(nothing);
         nothing.setNextState(nothing1);
         nothing1.setNextState(clampDrive);
         //nothing.setNextState(clampDrive);
-        clampDrive.setNextState(null);
+        clampDrive.setNextState(leftDrive);
+        leftDrive.setNextState(null);
+      //  backDrive.setNextState(null);
         //leftStrafe1.setNextState(null);
 
 
