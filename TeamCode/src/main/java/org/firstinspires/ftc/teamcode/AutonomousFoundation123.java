@@ -40,7 +40,7 @@ public class AutonomousFoundation123 extends LinearOpMode {
 
     //equivalent of TimeState
     public void timeMove(int time, double power, ArrayList<DcMotor> motor, String movement) {
-        int Time = time;
+        //int Time = time;
         DcMotor leftFront = motor.get(0);
         DcMotor rightFront = motor.get(1);
         DcMotor leftBack = motor.get(2);
@@ -49,7 +49,7 @@ public class AutonomousFoundation123 extends LinearOpMode {
         double Power = power;
         ElapsedTime mRuntime = new ElapsedTime();
         mRuntime.reset();
-        while (mRuntime.milliseconds() < Time) {
+        while (mRuntime.milliseconds() < time) {
             if (Movement == "forward") { //for some reason == worked
                 leftFront.setPower(Power);
                 rightFront.setPower(Power);
@@ -78,7 +78,7 @@ public class AutonomousFoundation123 extends LinearOpMode {
             }
 
         }
-        if (Time <= mRuntime.milliseconds()) {
+        if (time <= mRuntime.milliseconds()) {
             leftFront.setPower(0);
             rightFront.setPower(0);
             leftBack.setPower(0);
@@ -276,7 +276,7 @@ public class AutonomousFoundation123 extends LinearOpMode {
             backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
             //Drive(1,.5,motors,"forward");
-            timeMove(10000,.5 ,motors,"forward");
+            timeMove(3000,.5 ,motors,"forward");
             //Drive(30, .9, motors, "forward");
              /* Drive(40, .5, motors, "strafeRight");
             CrServoStuff(2000, .5,-.5, servoDrag);
