@@ -27,8 +27,8 @@ public class TeleOp2 extends OpMode {
     DcMotor raiseArm1;
     DcMotor raiseArm2;
     DcMotor extendArm;
-    Servo claw1;
-    Servo claw2;
+    CRServo claw1;
+    CRServo claw2;
     CRServo wrist;
     boolean powerControl = false;
     double powerGiven =0;
@@ -50,8 +50,8 @@ public class TeleOp2 extends OpMode {
         raiseArm1 = hardwareMap.dcMotor.get("raise arm 1");
         raiseArm2 = hardwareMap.dcMotor.get("raise arm 2");
         extendArm = hardwareMap.dcMotor.get("extend arm");
-        claw1 = hardwareMap.servo.get("claw 1");
-        claw2 = hardwareMap.servo.get("claw 2");
+        claw1 = hardwareMap.crservo.get("claw 1");
+        claw2 = hardwareMap.crservo.get("claw 2");
         drag1 = hardwareMap.crservo.get("drag front");
         drag2 = hardwareMap.crservo.get("drag back");
         wrist = hardwareMap.crservo.get("wrist");
@@ -132,7 +132,7 @@ public class TeleOp2 extends OpMode {
         //          -----GAME PAD 2-----
 
         //              ###CLAMPS###
-        /*if (gamepad2.x){
+        if (gamepad2.x){
             clamp = true;
         }
         if (gamepad2.y){
@@ -140,30 +140,32 @@ public class TeleOp2 extends OpMode {
             claw2.setPower(-1);
             clamp = false;
         }
-        else{
+        else if (!clamp){
             claw1.setPower(0);
             claw2.setPower(0);
         }
         if (clamp){
             claw1.setPower(-1);
             claw2.setPower(1);
-        }*/
+        }
 
 
 
         //claw1: 1=open, 0=closed
         //claw2: 0=open, 1=closed
 
-        //open
+        /*//open
         if (gamepad2.y){
             claw1.setPosition(0.6);
             claw2.setPosition(0.4);
         }
         //close
-        if (gamepad2.x){
+       else if (gamepad2.x){
             claw1.setPosition(0.4);
             claw2.setPosition(0.6);
-        }
+        }*/
+
+
 
         //              ###ARM EXTENSION###
 

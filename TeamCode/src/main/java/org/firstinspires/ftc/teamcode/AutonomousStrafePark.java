@@ -34,9 +34,9 @@ import java.util.Locale;
 
 import static java.lang.Thread.sleep;
 
-@Autonomous(name = "AutoFoundation", group = "Iterative OpMode")
+@Autonomous(name = "AutoPark1", group = "Iterative OpMode")
 
-public class AutonomousFoundation extends OpMode {
+public class AutonomousStrafePark extends OpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
     //CRServo claw1, claw2;
     CRServo drag1, drag2;
@@ -45,19 +45,17 @@ public class AutonomousFoundation extends OpMode {
 
     driveState rightStrafe1;
     CRServoState down;
-    clampDriveState dragFoundationBack;
+    clampDriveState clampDrive;
     timeState nothing;
     driveState leftStrafe1;
     timeState nothing1;
     driveState backwards1;
     CRServoState up;
-    timeState nothing2;
+    timeState timeState;
     driveState forward1;
     clampDriveState leftDrive;
     clampDriveState backDrive;
     CRServoState down1;
-    clampDriveState turnWithFoundation;
-    clampDriveState pushFoundationCorner;
     private StateMachine machine;
 
 
@@ -98,40 +96,38 @@ public class AutonomousFoundation extends OpMode {
 
         //crServos.add(claw1);
         //crServos.add(claw2);
-
-
+/*
         rightStrafe1 = new driveState(40, .5, motors, "strafeRight");
-        nothing = new timeState(3000, 0, motors, "forward");
+        nothing = new timeState(1000, 0, motors, "forward");
         down = new CRServoState (5000, .25, -.25, servoDrag);
         down1 = new CRServoState(5000, .25, -.25, servoDrag);
 
         leftStrafe1 = new driveState(40, .5, motors, "strafeLeft");
         nothing1 = new timeState(2000, 0, motors, "forward");
         backwards1 = new driveState(16, .5, motors, "backwards");
-        nothing2 = new timeState(5000, 0, motors, "forward");
-        up = new CRServoState(4000, -.5, .5, servoDrag);
+        //nothing2 = new timeState(5000, 0, motors, "forward");
+        //up = new CRServoState(4000, -.5, .5, servoDrag); */
+        rightStrafe1 = new driveState(10, .5, motors, "strafeRight");
         forward1 = new driveState(30, .5, motors, "forward");
-        dragFoundationBack = new clampDriveState(50,.5,motors,"strafeLeft",.5,-.5,servoDrag);
-        turnWithFoundation = new clampDriveState(20,.5,motors,"turnRight",.5,-.5,servoDrag);
-        pushFoundationCorner = new clampDriveState(50,.5,motors,"strafeRight",.5,-.5,servoDrag);
-        leftDrive = new clampDriveState(5,.5,motors, "turnRight",.5,-.5,servoDrag);
-      //  backDrive = new clampDriveState(10,.5,motors,"backward",.5,-.5,servoDrag);
+        timeState = new timeState (1100, .5, motors, "forward");
+        // clampDrive = new clampDriveState(50,.5,motors,"strafeLeft",.5,-.5,servoDrag);
+        //  leftDrive = new clampDriveState(5,.5,motors, "turnRight",.5,-.5,servoDrag);
+        //  backDrive = new clampDriveState(10,.5,motors,"backward",.5,-.5,servoDrag);
         //down.setNextState(null);
-
+        timeState.setNextState(null);
         //up.setNextState(rightStrafe1);
-        rightStrafe1.setNextState(down);
-        down.setNextState(nothing);
-        nothing.setNextState(dragFoundationBack);
-        //nothing1.setNextState(clampDrive);
+        /*rightStrafe1.setNextState(down);
+        down.setNextState(down1);
+        down1.setNextState(nothing);
+        nothing.setNextState(nothing1);
+        nothing1.setNextState(clampDrive);
         //nothing.setNextState(clampDrive);
-        dragFoundationBack.setNextState(turnWithFoundation);
-        turnWithFoundation.setNextState(pushFoundationCorner);
-        pushFoundationCorner.setNextState(null);
-        //leftDrive.setNextState(null);
-      //  backDrive.setNextState(null);
+        clampDrive.setNextState(leftDrive);
+        leftDrive.setNextState(null);
+        //  backDrive.setNextState(null);
         //leftStrafe1.setNextState(null);
 
-
+*/
         /*rightStrafe1.setNextState(down);
         down.setNextState(null);*/
 
@@ -155,7 +151,7 @@ public class AutonomousFoundation extends OpMode {
     public void start(){
 
         //machine = new StateMachine(down);
-        machine = new StateMachine(rightStrafe1);
+        machine = new StateMachine(timeState);
 
     }
     @Override
