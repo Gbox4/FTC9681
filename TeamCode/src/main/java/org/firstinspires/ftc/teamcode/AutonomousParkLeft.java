@@ -34,9 +34,9 @@ import java.util.Locale;
 
 import static java.lang.Thread.sleep;
 
-@Autonomous(name = "AutoPark1", group = "Iterative OpMode")
+@Autonomous(name = "AutoParkLeft", group = "Iterative OpMode")
 
-public class AutonomousStrafePark extends OpMode {
+public class AutonomousParkLeft extends OpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
     //CRServo claw1, claw2;
     CRServo drag1, drag2;
@@ -52,6 +52,7 @@ public class AutonomousStrafePark extends OpMode {
     driveState backwards1;
     CRServoState up;
     timeState timeState;
+    timeState timeStrafeLeft;
     driveState forward1;
     clampDriveState leftDrive;
     clampDriveState backDrive;
@@ -107,14 +108,16 @@ public class AutonomousStrafePark extends OpMode {
         backwards1 = new driveState(16, .5, motors, "backwards");
         //nothing2 = new timeState(5000, 0, motors, "forward");
         //up = new CRServoState(4000, -.5, .5, servoDrag); */
-        rightStrafe1 = new driveState(10, .5, motors, "strafeRight");
+        timeStrafeLeft = new timeState (2000, .5, motors, "strafeLeft");
+        rightStrafe1 = new driveState(20, .5, motors, "strafeRight");
         forward1 = new driveState(30, .5, motors, "forward");
         timeState = new timeState (1100, .5, motors, "forward");
         // clampDrive = new clampDriveState(50,.5,motors,"strafeLeft",.5,-.5,servoDrag);
         //  leftDrive = new clampDriveState(5,.5,motors, "turnRight",.5,-.5,servoDrag);
         //  backDrive = new clampDriveState(10,.5,motors,"backward",.5,-.5,servoDrag);
         //down.setNextState(null);
-        timeState.setNextState(null);
+        timeState.setNextState(timeStrafeLeft);
+        timeStrafeLeft.setNextState(null);
         //up.setNextState(rightStrafe1);
         /*rightStrafe1.setNextState(down);
         down.setNextState(down1);
