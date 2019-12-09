@@ -108,7 +108,7 @@ public class TeleOp4 extends OpMode {
         }
 
         //              ###DRAG SERVOS###
-        if(gamepad1.a){
+        if(gamepad1.x){
             drag1.setPower(.5);
         }
         else if(gamepad1.b){
@@ -117,7 +117,7 @@ public class TeleOp4 extends OpMode {
         else{
             drag1.setPower(0);
         }
-        if(gamepad1.x){
+        if(gamepad1.a){
             drag2.setPower(.5);
         }
         else if(gamepad1.y){

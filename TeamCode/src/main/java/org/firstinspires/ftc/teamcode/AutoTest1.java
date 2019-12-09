@@ -34,9 +34,9 @@ import java.util.Locale;
 
 import static java.lang.Thread.sleep;
 
-@Autonomous(name = "AutoFoundationRight", group = "Iterative OpMode")
+@Autonomous(name = "AutoTest1", group = "Iterative OpMode")
 
-public class AutonomousFoundationRight extends OpMode {
+public class AutoTest1 extends OpMode {
 
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
     CRServo drag1, drag2;
@@ -48,8 +48,7 @@ public class AutonomousFoundationRight extends OpMode {
 
 
 
-    driveState strafeRight;
-    CRServoState lowerClamp;
+
     clampDriveState backwards;
 
 
@@ -82,24 +81,17 @@ public class AutonomousFoundationRight extends OpMode {
             servoDrag.add(drag2);
         }
 
-        strafeRight = new driveState(40, .3, motors, "strafeRight");
-        lowerClamp = new CRServoState(3000, .25, -.25, servoDrag);
-        backwards = new clampDriveState(-40,.5,motors,"backwards",.5,-.5,servoDrag);
+        backwards = new clampDriveState(40,-.5,motors,"backwards",.5,-.5,servoDrag);
 
 
-
-        strafeRight.setNextState(lowerClamp);
-        lowerClamp.setNextState(backwards);
         backwards.setNextState(null);
-
-
 
     }
     @Override
     public void start(){
 
 
-        machine = new StateMachine(strafeRight);
+        machine = new StateMachine(backwards);
 
     }
     @Override
