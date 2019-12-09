@@ -28,6 +28,7 @@ public class timeState implements State {
 
     private int Time;
     ElapsedTime mRuntime = new ElapsedTime();
+    boolean reset = true;
 
 
     public timeState(int time, double power, ArrayList<DcMotor> motor, String movement) {
@@ -38,7 +39,7 @@ public class timeState implements State {
         rightBack = motor.get(3);
         Movement = movement;
         Power = power;
-        mRuntime.reset();
+
 
     }
 
@@ -55,6 +56,10 @@ public class timeState implements State {
     @Override
     public State update() {
 
+        if (reset){
+            mRuntime.reset();
+            reset = false;
+        }
 
         while (mRuntime.milliseconds() < Time) {
             if (Movement == "forward") { //for some reason == worked

@@ -33,17 +33,8 @@ public class AutonomousPark extends OpMode {
     //CRServo claw1, claw2;
     CRServo drag1, drag2;
     //Servo pickUp1, pickUp2,
-    //ModernRoboticsI2cRangeSensor SenseFront, SenseLeft, SenseRight,SenseFront2;
-
-    driveState rightStrafe1;
-    CRServoState down;
-    clampDriveState clampDrive;
-    timeState nothing;
-    driveState leftStrafe1;
-    timeState nothing1;
-    driveState backwards1;
-    CRServoState up;
-    timeState timeState;
+    //ModernRoboticsI2cRangeSensor SenseFront, SenseLeft, SenseRight,SenseFront
+    timeState forward;
     private StateMachine machine;
 
 
@@ -97,9 +88,9 @@ public class AutonomousPark extends OpMode {
         backwards1 = new driveState(16, .5, motors, "backwards");
         up = new CRServoState(4000, -.5, .5, servoDrag); */
 
-        timeState = new timeState (1100, .5, motors, "forward"); //without encoders
+        forward = new timeState (1100, .5, motors, "forward"); //without encoders
 
-        timeState.setNextState(null);
+
 
         /* ----- Code for Foundation Drag -------
         rightStrafe1.setNextState(down); //goes to timeState if parking on inside only
@@ -116,7 +107,8 @@ public class AutonomousPark extends OpMode {
     @Override
     public void start(){
 
-        machine = new StateMachine(timeState); //start with rightStrafe1 for foundation, or parking on inside
+
+        machine = new StateMachine(forward); //start with rightStrafe1 for foundation, or parking on inside
 
     }
     @Override

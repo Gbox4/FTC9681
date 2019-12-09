@@ -34,49 +34,65 @@ import java.util.Locale;
 
 import static java.lang.Thread.sleep;
 
-@Autonomous(name = "AutoFoundation2", group = "Iterative OpMode")
+@Autonomous(name = "AutoFoundationRight", group = "Iterative OpMode")
 
-public class AutonomousFoundation2 extends OpMode {
+public class AutonomousFoundationRight extends OpMode {
+
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
-
     CRServo drag1, drag2;
     private StateMachine machine;
-
-
-
     ArrayList<Servo> servoPickUp= new ArrayList<Servo>();
-
-
     ArrayList<CRServo> servoDrag= new ArrayList<CRServo>();
     ArrayList<DcMotor> motors = new ArrayList<DcMotor>();
     ArrayList<CRServo> crServos = new ArrayList <CRServo> ();
 
+
+
+    driveState strafeRight;
+    CRServoState lowerClamp;
+    clampDriveState turnFoundation;
+
+    //clampDriveState dragToWall;
+
+
+
+
     @Override
     public void init() {
 
-        frontRight=hardwareMap.dcMotor.get("front right");
-        frontLeft=hardwareMap.dcMotor.get("front left");
-        backRight=hardwareMap.dcMotor.get("back right");
-        backLeft=hardwareMap.dcMotor.get("back left");
-        extendArm=hardwareMap.dcMotor.get("extend arm");
+        if (true) {
 
-        drag1= hardwareMap.crservo.get("drag front");
-        drag2= hardwareMap.crservo.get ("drag back");
+            frontRight = hardwareMap.dcMotor.get("front right");
+            frontLeft = hardwareMap.dcMotor.get("front left");
+            backRight = hardwareMap.dcMotor.get("back right");
+            backLeft = hardwareMap.dcMotor.get("back left");
+            extendArm = hardwareMap.dcMotor.get("extend arm");
 
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+            drag1 = hardwareMap.crservo.get("drag front");
+            drag2 = hardwareMap.crservo.get("drag back");
 
-        motors.add(frontLeft);
-        motors.add(frontRight);
-        motors.add(backLeft);
-        motors.add(backRight);
+            frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+            backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        servoDrag.add(drag1);
-        servoDrag.add(drag2);
+            motors.add(frontLeft);
+            motors.add(frontRight);
+            motors.add(backLeft);
+            motors.add(backRight);
+
+            servoDrag.add(drag1);
+            servoDrag.add(drag2);
+        }
+
+        strafeRight = new driveState(40, .3, motors, "strafeRight");
+        lowerClamp = new CRServoState(3000, .25, -.25, servoDrag);
+        turnFoundation = new clampDriveState(70, .5, motors, "turnRight", .5, -.5, servoDrag);
+        //dragToWall = new clampDriveState(70, .5, motors, "strafeLeft", .5, -.5, servoDrag);
 
 
-        
-
+        strafeRight.setNextState(lowerClamp);
+        lowerClamp.setNextState(turnFoundation);
+        turnFoundation.setNextState(null);
+        //dragToWall.setNextState(null);
 
 
     }
@@ -84,7 +100,7 @@ public class AutonomousFoundation2 extends OpMode {
     public void start(){
 
 
-        machine = new StateMachine(null);
+        machine = new StateMachine(strafeRight);
 
     }
     @Override

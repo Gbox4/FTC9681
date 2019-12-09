@@ -108,16 +108,15 @@ public class AutonomousParkLeft extends OpMode {
         backwards1 = new driveState(16, .5, motors, "backwards");
         //nothing2 = new timeState(5000, 0, motors, "forward");
         //up = new CRServoState(4000, -.5, .5, servoDrag); */
-        timeStrafeLeft = new timeState (2000, .5, motors, "strafeLeft");
-        rightStrafe1 = new driveState(20, .5, motors, "strafeRight");
-        forward1 = new driveState(30, .5, motors, "forward");
+        //timeStrafeLeft = new timeState (2000, .5, motors, "strafeLeft");
+        leftStrafe1 = new driveState(40, .5, motors, "strafeLeft");
         timeState = new timeState (1100, .5, motors, "forward");
         // clampDrive = new clampDriveState(50,.5,motors,"strafeLeft",.5,-.5,servoDrag);
         //  leftDrive = new clampDriveState(5,.5,motors, "turnRight",.5,-.5,servoDrag);
         //  backDrive = new clampDriveState(10,.5,motors,"backward",.5,-.5,servoDrag);
         //down.setNextState(null);
-        timeState.setNextState(timeStrafeLeft);
-        timeStrafeLeft.setNextState(null);
+        timeState.setNextState(leftStrafe1);
+        leftStrafe1.setNextState(null);
         //up.setNextState(rightStrafe1);
         /*rightStrafe1.setNextState(down);
         down.setNextState(down1);

@@ -32,6 +32,7 @@ public class CRServoState implements State {
 
     private int totalTime;
     ElapsedTime mRuntime = new ElapsedTime();
+    boolean reset = true;
 
 
     public CRServoState(int time, double power, double power2, ArrayList<CRServo> CRServos) {
@@ -41,7 +42,7 @@ public class CRServoState implements State {
 
         Power = power;
         Power2 = power2;
-        mRuntime.reset();
+
 
     }
 
@@ -58,6 +59,11 @@ public class CRServoState implements State {
 
     @Override
     public State update() {
+
+        if (reset){
+            mRuntime.reset();
+            reset = false;
+        }
 
 
         while (mRuntime.milliseconds() < totalTime) {

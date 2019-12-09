@@ -98,8 +98,9 @@ public class AutonomousParkRight extends OpMode {
         //crServos.add(claw1);
         //crServos.add(claw2);
 /*
-        rightStrafe1 = new driveState(40, .5, motors, "strafeRight");
+        rightStrafe1 = new driveState(40, .5, motors, "strafeRight");*/
         nothing = new timeState(1000, 0, motors, "forward");
+        /*
         down = new CRServoState (5000, .25, -.25, servoDrag);
         down1 = new CRServoState(5000, .25, -.25, servoDrag);
 
@@ -108,16 +109,14 @@ public class AutonomousParkRight extends OpMode {
         backwards1 = new driveState(16, .5, motors, "backwards");
         //nothing2 = new timeState(5000, 0, motors, "forward");
         //up = new CRServoState(4000, -.5, .5, servoDrag); */
-        timeStrafeRight = new timeState (2000, .5, motors, "strafeRight");
-        rightStrafe1 = new driveState(20, .5, motors, "strafeRight");
-        forward1 = new driveState(30, .5, motors, "forward");
+        rightStrafe1 = new driveState(40, .5, motors, "strafeRight");
         timeState = new timeState (1100, .5, motors, "forward");
         // clampDrive = new clampDriveState(50,.5,motors,"strafeLeft",.5,-.5,servoDrag);
         //  leftDrive = new clampDriveState(5,.5,motors, "turnRight",.5,-.5,servoDrag);
         //  backDrive = new clampDriveState(10,.5,motors,"backward",.5,-.5,servoDrag);
         //down.setNextState(null);
-        timeState.setNextState(timeStrafeRight);
-        timeStrafeRight.setNextState(null);
+        timeState.setNextState(rightStrafe1);
+        rightStrafe1.setNextState(null);
         //up.setNextState(rightStrafe1);
         /*rightStrafe1.setNextState(down);
         down.setNextState(down1);
