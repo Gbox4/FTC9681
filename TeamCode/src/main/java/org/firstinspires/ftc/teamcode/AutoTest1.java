@@ -18,6 +18,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.teamcode.pickUpState; //necessary
 import org.firstinspires.ftc.teamcode.timeState; //necessar
 
@@ -30,6 +32,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.StateMachine; //necessary
 import org.firstinspires.ftc.teamcode.StateMachine.State; //necessary
 import java.util.ArrayList;
+import java.util.Locale;
+
+import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+
 import java.util.Locale;
 
 import static java.lang.Thread.sleep;
@@ -50,9 +66,15 @@ public class AutoTest1 extends OpMode {
 
 
     clampDriveState backwards;
+    gyroTurnByPID Blah;
+    BNO055IMU imu;
+
+    // State used for updating telemetry
+    Orientation angles;
+    Acceleration gravity;
 
 
-
+   // imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
 
     @Override
@@ -79,6 +101,16 @@ public class AutoTest1 extends OpMode {
 
             servoDrag.add(drag1);
             servoDrag.add(drag2);
+            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+            parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+            parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+            parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+            parameters.loggingEnabled      = true;
+            parameters.loggingTag          = "IMU";
+            parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+            imu = hardwareMap.get(BNO055IMU.class, "imu");
+            imu.initialize(parameters);
         }
 
         backwards = new clampDriveState(40,-.5,motors,"backwards",.5,-.5,servoDrag);

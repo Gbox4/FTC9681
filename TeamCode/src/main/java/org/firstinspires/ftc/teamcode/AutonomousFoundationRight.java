@@ -48,9 +48,12 @@ public class AutonomousFoundationRight extends OpMode {
 
 
 
-    driveState strafeRight;
+    driveState strafeLeft;
+    driveState towardsFoundation;
     CRServoState lowerClamp;
-    clampDriveState backwards;
+    clampDriveState forwardsFoundation;
+    CRServoState raiseClamp;
+    driveState strafeRight;
 
 
 
@@ -82,15 +85,21 @@ public class AutonomousFoundationRight extends OpMode {
             servoDrag.add(drag2);
         }
 
-        strafeRight = new driveState(40, .3, motors, "strafeRight");
+        strafeLeft = new driveState(16, .3, motors, "strafeLeft"); //strafe left, lwoer target
+        towardsFoundation = new driveState (28.5, .5, motors, "backwards");
         lowerClamp = new CRServoState(3000, .25, -.25, servoDrag);
-        backwards = new clampDriveState(-40,.5,motors,"backwards",.5,-.5,servoDrag);
+        forwardsFoundation = new clampDriveState(28.5,.5,motors,"forwards",.5,-.5,servoDrag); //change to forwards
+        raiseClamp = new CRServoState(3000, -.25,.25, servoDrag); //add lift clamp (CRServoState)
+        strafeRight = new driveState(44,.5,motors,"strafeRight");//add rightstrafe
 
 
 
-        strafeRight.setNextState(lowerClamp);
-        lowerClamp.setNextState(backwards);
-        backwards.setNextState(null);
+        strafeLeft.setNextState(towardsFoundation);
+        towardsFoundation.setNextState(lowerClamp);
+        lowerClamp.setNextState(forwardsFoundation);
+        forwardsFoundation.setNextState(raiseClamp);
+        raiseClamp.setNextState(strafeRight);
+        strafeRight.setNextState(null);
 
 
 
@@ -99,7 +108,7 @@ public class AutonomousFoundationRight extends OpMode {
     public void start(){
 
 
-        machine = new StateMachine(strafeRight);
+        machine = new StateMachine(strafeLeft);
 
     }
     @Override

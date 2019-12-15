@@ -18,6 +18,20 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+
+import java.util.Locale;
+
 @TeleOp(name ="TeleOp3", group = "TeleOP")
 public class TeleOp3 extends OpMode {
     DcMotor frontRight;
@@ -30,6 +44,7 @@ public class TeleOp3 extends OpMode {
     DcMotor extendArm;
     Servo claw1;
     Servo claw2;
+    CRServo wrist;
     boolean powerControl = false;
     double powerGiven =0;
     int powerButton;
@@ -38,9 +53,14 @@ public class TeleOp3 extends OpMode {
     CRServo drag1, drag2;
     boolean prevx = false;
     boolean prevy = false;
+    BNO055IMU imu;
 
+    // State used for updating telemetry
+    Orientation angles;
+    Acceleration gravity;
     double armPowerMultiplier = 0.5;
     double clawIncrease = 0.1;
+
 
     // DcMotor fan;
     // Servo marker, servoTouch, servoSlide, servoFlap;
@@ -64,6 +84,19 @@ public class TeleOp3 extends OpMode {
     public void init() {
         //hardware map is for phone
 
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+        composeTelemetry();
+
+        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         //    touchSense = hardwareMap.get(DigitalChannel.class, "sensor_digital");
         frontRight = hardwareMap.dcMotor.get("front right");
         frontLeft = hardwareMap.dcMotor.get("front left");
@@ -74,6 +107,7 @@ public class TeleOp3 extends OpMode {
         extendArm = hardwareMap.dcMotor.get("extend arm");
         claw1 = hardwareMap.servo.get("claw 1");
         claw2 = hardwareMap.servo.get("claw 2");
+        wrist = hardwareMap.crservo.get("wrist");
         //wheels
         drag1 = hardwareMap.crservo.get("drag front");
         drag2 = hardwareMap.crservo.get("drag back");
@@ -262,6 +296,16 @@ public class TeleOp3 extends OpMode {
             drag2.setPower(0);
         }
 
+        if (gamepad2.right_bumper){
+            wrist.setPower(0.5);
+        }
+        else if (gamepad2.left_bumper){
+            wrist.setPower(-0.5);
+        }
+        else {
+            wrist.setPower(0);
+        }
+
         //raiseArm.setPower(gamepad1)
 
 
@@ -279,7 +323,82 @@ public class TeleOp3 extends OpMode {
             drag2.setPosition(1);
         }*/
 
+
+        telemetry.update();
+
     }
+    void composeTelemetry() {
+
+        // At the beginning of each telemetry update, grab a bunch of data
+        // from the IMU that we will then display in separate lines.
+        telemetry.addAction(new Runnable() { @Override public void run()
+        {
+            // Acquiring the angles is relatively expensive; we don't want
+            // to do that in each of the three items that need that info, as that's
+            // three times the necessary expense.
+            angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            gravity  = imu.getGravity();
+        }
+        });
+
+        telemetry.addLine()
+                .addData("status", new Func<String>() {
+                    @Override public String value() {
+                        return imu.getSystemStatus().toShortString();
+                    }
+                })
+                .addData("calib", new Func<String>() {
+                    @Override public String value() {
+                        return imu.getCalibrationStatus().toString();
+                    }
+                });
+
+        telemetry.addLine()
+                .addData("heading", new Func<String>() {
+                    @Override public String value() {
+                        return formatAngle(angles.angleUnit, angles.firstAngle);
+                    }
+                })
+                .addData("roll", new Func<String>() {
+                    @Override public String value() {
+                        return formatAngle(angles.angleUnit, angles.secondAngle);
+                    }
+                })
+                .addData("pitch", new Func<String>() {
+                    @Override public String value() {
+                        return formatAngle(angles.angleUnit, angles.thirdAngle);
+                    }
+                });
+
+        telemetry.addLine()
+                .addData("grvty", new Func<String>() {
+                    @Override public String value() {
+                        return gravity.toString();
+                    }
+                })
+                .addData("mag", new Func<String>() {
+                    @Override public String value() {
+                        return String.format(Locale.getDefault(), "%.3f",
+                                Math.sqrt(gravity.xAccel*gravity.xAccel
+                                        + gravity.yAccel*gravity.yAccel
+                                        + gravity.zAccel*gravity.zAccel));
+                    }
+                });
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // Formatting
+    //----------------------------------------------------------------------------------------------
+
+    String formatAngle(AngleUnit angleUnit, double angle) {
+        return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
+    }
+
+    String formatDegrees(double degrees){
+        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
+    }
+
+
 
 
 

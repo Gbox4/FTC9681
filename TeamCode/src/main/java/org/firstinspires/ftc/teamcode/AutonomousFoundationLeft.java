@@ -85,10 +85,14 @@ public class AutonomousFoundationLeft extends OpMode {
             servoDrag.add(drag2);
         }
 
-        strafeLeft = new driveState(40, .3, motors, "strafeRight");
+        strafeLeft = new driveState(40, .3, motors, "strafeRight"); //change to strafe left
+        //add backwards
         lowerClamp = new CRServoState(3000, .25, -.25, servoDrag);
-        turnFoundation = new clampDriveState(70, .5, motors, "turnLeft", .5, -.5, servoDrag);
-        //dragToWall = new clampDriveState(70, .5, motors, "strafeLeft", .5, -.5, servoDrag);
+        //turnFoundation = new clampDriveState(70, .5, motors, "turnLeft", .5, -.5, servoDrag); //maybe no turn? Do not really need
+        //dragToWall = new clampDriveState(70, .5, motors, "strafeLeft", .5, -.5, servoDrag); //change to forwards
+        //lift clamp
+        //right strafe
+        //move backwards
 
         wait = new timeState(2000, 0, motors, "forward");
 
