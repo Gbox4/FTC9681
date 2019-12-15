@@ -1,28 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.drm.DrmStore;
-import android.util.Log;
-
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import org.firstinspires.ftc.teamcode.pickUpState; //necessary
-import org.firstinspires.ftc.teamcode.timeState; //necessary
-
-import org.firstinspires.ftc.teamcode.StateMachine; //necessary
-import org.firstinspires.ftc.teamcode.StateMachine.State; //necessary
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import static java.lang.Thread.sleep;
 
