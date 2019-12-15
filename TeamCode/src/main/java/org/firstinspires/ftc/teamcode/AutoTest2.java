@@ -10,17 +10,13 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-
-
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import java.util.ArrayList;
 
-import static java.lang.Thread.sleep;
+@Autonomous(name = "AutoTest2", group = "Iterative OpMode")
 
-@Autonomous(name = "AutoTest1", group = "Iterative OpMode")
-
-public class AutoTest1 extends OpMode {
+public class AutoTest2 extends OpMode {
 
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
     CRServo drag1, drag2;
@@ -33,7 +29,7 @@ public class AutoTest1 extends OpMode {
 
 
 
-    driveState backwards;
+    timeState backwards;
     BNO055IMU imu;
 
     // State used for updating telemetry
@@ -80,7 +76,7 @@ public class AutoTest1 extends OpMode {
             imu.initialize(parameters);
         }
 
-        backwards = new driveState(100,.5,motors,"backwards");
+        backwards = new timeState (1000, .5, motors, "backward");
 
 
         backwards.setNextState(null);
