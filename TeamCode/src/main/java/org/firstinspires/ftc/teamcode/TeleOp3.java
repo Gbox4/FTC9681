@@ -42,15 +42,14 @@ public class TeleOp3 extends OpMode {
     DcMotor raiseArm1;
     DcMotor raiseArm2;
     DcMotor extendArm;
-    Servo claw1;
-    Servo claw2;
+    CRServo claw1, claw2;
     CRServo wrist;
     boolean powerControl = false;
     double powerGiven =0;
     int powerButton;
     double pos1 = 0.9;
     double pos2 = 0.1;
-    CRServo drag1, drag2;
+    //CRServo drag1, drag2;
     boolean prevx = false;
     boolean prevy = false;
     BNO055IMU imu;
@@ -60,6 +59,8 @@ public class TeleOp3 extends OpMode {
     Acceleration gravity;
     double armPowerMultiplier = 0.5;
     double clawIncrease = 0.1;
+
+    boolean clamp = false;
 
 
     // DcMotor fan;
@@ -105,12 +106,12 @@ public class TeleOp3 extends OpMode {
         raiseArm1 = hardwareMap.dcMotor.get("raise arm 1");
         raiseArm2 = hardwareMap.dcMotor.get("raise arm 2");
         extendArm = hardwareMap.dcMotor.get("extend arm");
-        claw1 = hardwareMap.servo.get("claw 1");
-        claw2 = hardwareMap.servo.get("claw 2");
+        claw1 = hardwareMap.crservo.get("claw 1");
+        claw2 = hardwareMap.crservo.get("claw 2");
         wrist = hardwareMap.crservo.get("wrist");
         //wheels
-        drag1 = hardwareMap.crservo.get("drag front");
-        drag2 = hardwareMap.crservo.get("drag back");
+        //drag1 = hardwareMap.crservo.get("drag front");
+        //drag2 = hardwareMap.crservo.get("drag back");
         // pulley = hardwareMap.dcMotor.get("pulley"); //pulley for intake
      /*   fan = hardwareMap.dcMotor.get("fan");
         lift = hardwareMap.dcMotor.get("lift"); //lift mechanism
@@ -148,7 +149,7 @@ public class TeleOp3 extends OpMode {
 
         //Assignment of motor power in relation to wheels
         //frontLeft.setPower(fLeftPower/powerButton);
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //backLeft.setPower(bLeftPower/powerButton);
         //backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -219,7 +220,8 @@ public class TeleOp3 extends OpMode {
         else{
             claw2.setPosition(claw2.getPosition());
         }*/
-        if(gamepad2.x&& !prevx){
+        /*
+      if(gamepad2.x&& !prevx){
             prevx=true;
             pos1+= .1;
         }
@@ -244,7 +246,24 @@ public class TeleOp3 extends OpMode {
         }
 
       claw1.setPosition(pos1);
-      claw2.setPosition(pos2);
+      claw2.setPosition(pos2);*/
+
+        if (gamepad2.x){
+            clamp = true;
+        }
+        if (gamepad2.y){
+            claw1.setPower(1);
+            claw2.setPower(-1);
+            clamp = false;
+        }
+        else if (!clamp){
+            claw1.setPower(0);
+            claw2.setPower(0);
+        }
+        if (clamp){
+            claw1.setPower(-1);
+            claw2.setPower(1);
+        }
 
 
         extendArm.setPower(-gamepad2.right_stick_y); //extends cascading rail slides
@@ -275,26 +294,6 @@ public class TeleOp3 extends OpMode {
         raiseArm1.setPower((gamepad2.left_stick_y*armPowerMultiplier));
         raiseArm2.setPower((gamepad2.left_stick_y*armPowerMultiplier));
         // }
-        if(gamepad1.a){
-            drag1.setPower(.5);
-        }
-        else if(gamepad1.b){
-            drag1.setPower(-.5);
-        }
-        else{
-            drag1.setPower(0);
-        }
-
-
-        if(gamepad1.x){
-            drag2.setPower(.5);
-        }
-        else if(gamepad1.y){
-            drag2.setPower(-.5);
-        }
-        else{
-            drag2.setPower(0);
-        }
 
         if (gamepad2.right_bumper){
             wrist.setPower(0.5);
