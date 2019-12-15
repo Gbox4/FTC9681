@@ -42,7 +42,7 @@ public class TeleOp3 extends OpMode {
     DcMotor raiseArm1;
     DcMotor raiseArm2;
     DcMotor extendArm;
-    CRServo claw1, claw2;
+    Servo claw1, claw2;
     CRServo wrist;
     boolean powerControl = false;
     double powerGiven =0;
@@ -106,8 +106,8 @@ public class TeleOp3 extends OpMode {
         raiseArm1 = hardwareMap.dcMotor.get("raise arm 1");
         raiseArm2 = hardwareMap.dcMotor.get("raise arm 2");
         extendArm = hardwareMap.dcMotor.get("extend arm");
-        claw1 = hardwareMap.crservo.get("claw 1");
-        claw2 = hardwareMap.crservo.get("claw 2");
+        claw1 = hardwareMap.servo.get("claw 1");
+        claw2 = hardwareMap.servo.get("claw 2");
         wrist = hardwareMap.crservo.get("wrist");
         //wheels
         //drag1 = hardwareMap.crservo.get("drag front");
@@ -220,7 +220,7 @@ public class TeleOp3 extends OpMode {
         else{
             claw2.setPosition(claw2.getPosition());
         }*/
-        /*
+
       if(gamepad2.x&& !prevx){
             prevx=true;
             pos1+= .1;
@@ -246,9 +246,9 @@ public class TeleOp3 extends OpMode {
         }
 
       claw1.setPosition(pos1);
-      claw2.setPosition(pos2);*/
+      claw2.setPosition(pos2);
 
-        if (gamepad2.x){
+        /*if (gamepad2.x){
             clamp = true;
         }
         if (gamepad2.y){
@@ -263,7 +263,7 @@ public class TeleOp3 extends OpMode {
         if (clamp){
             claw1.setPower(-1);
             claw2.setPower(1);
-        }
+        }*/
 
 
         extendArm.setPower(-gamepad2.right_stick_y); //extends cascading rail slides
