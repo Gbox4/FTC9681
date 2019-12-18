@@ -234,9 +234,9 @@ public class TeleOp4 extends OpMode {
                 setRaiseArmPower(0.1f, 0.35);
             }
             //If the driver is not moving the arm
-            else {
+            /*else {
                 setRaiseArmPower(0.23f, 1);
-            }
+            }*/
         }
         // Slow raise arm mode
         else {
@@ -249,9 +249,9 @@ public class TeleOp4 extends OpMode {
                 setRaiseArmPower(0f, 1);
             }
             //If the driver is not moving the arm
-            else {
+           /* else {
                 setRaiseArmPower(0.23f, 1);
-            }
+            }*/
         }
 
         telemetry.update();
