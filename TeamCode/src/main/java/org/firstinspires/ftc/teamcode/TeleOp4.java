@@ -38,7 +38,7 @@ public class TeleOp4 extends OpMode {
     DcMotor frontLeft;
     DcMotor backRight;
     DcMotor backLeft;
-    DcMotor raiseArm1;
+    //DcMotor raiseArm1;
     DcMotor raiseArm2;
     DcMotor extendArm;
     CRServo claw1;
@@ -51,7 +51,7 @@ public class TeleOp4 extends OpMode {
     CRServo drag1, drag2;
     double wristAngle = 0;
 
-    double armPowerMultiplier = 0.5;
+    //double armPowerMultiplier = 0.5;
 
     BNO055IMU imu;
 
@@ -68,7 +68,7 @@ public class TeleOp4 extends OpMode {
         frontLeft = hardwareMap.dcMotor.get("front left");
         backRight = hardwareMap.dcMotor.get("back right");
         backLeft = hardwareMap.dcMotor.get("back left");
-        raiseArm1 = hardwareMap.dcMotor.get("raise arm 1");
+        //raiseArm1 = hardwareMap.dcMotor.get("raise arm 1");
         raiseArm2 = hardwareMap.dcMotor.get("raise arm 2");
         extendArm = hardwareMap.dcMotor.get("extend arm");
         claw1 = hardwareMap.crservo.get("claw 1");
@@ -93,11 +93,11 @@ public class TeleOp4 extends OpMode {
 
     }
 
-    private void setRaiseArmPower(float armPower, double multiplier){
+   /* private void setRaiseArmPower(float armPower, double multiplier){
         raiseArm1.setPower(armPower*multiplier);
         raiseArm2.setPower(armPower*multiplier);
         return;
-    }
+    }*/
 
     public void loop() {
         //              -----STICK VARIABLES-----
@@ -129,8 +129,8 @@ public class TeleOp4 extends OpMode {
 
         backRight.setPower(bRightPower/powerButton);
 
-        raiseArm1.setDirection(DcMotorSimple.Direction.FORWARD);
-        raiseArm2.setDirection(DcMotorSimple.Direction.REVERSE);
+        //raiseArm1.setDirection(DcMotorSimple.Direction.FORWARD);
+        raiseArm2.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
 
@@ -223,6 +223,8 @@ public class TeleOp4 extends OpMode {
 
         //              ###ARM RAISING###
 
+        raiseArm2.setPower(gamepad2.left_stick_y);
+/*
         // Fast raise arm mode
         if (gamepad2.right_trigger>0){
             //If the driver is trying to move the arm up:
@@ -236,10 +238,10 @@ public class TeleOp4 extends OpMode {
             //If the driver is not moving the arm
             /*else {
                 setRaiseArmPower(0.23f, 1);
-            }*/
+            }
         }
         // Slow raise arm mode
-        else {
+     /*   else {
             //If the driver is trying to move the arm up:
             if (rawRaiseValue > 0) {
                 setRaiseArmPower(rawRaiseValue, 0.35);
@@ -251,8 +253,8 @@ public class TeleOp4 extends OpMode {
             //If the driver is not moving the arm
            /* else {
                 setRaiseArmPower(0.23f, 1);
-            }*/
-        }
+            }
+        }*/
 
         telemetry.update();
 

@@ -28,11 +28,11 @@ public class AutonomousFoundationRight extends OpMode {
 
     driveState strafeLeft;
     timeState towardsFoundation;
-    CRServoState lowerClamp;
+    CRServoState2 lowerClamp;
     clampDriveState forwardsFoundation;
     CRServoState raiseClamp;
     driveState strafeRight;
-
+    timeState forwardsFoundation1;
 
 
 
@@ -64,17 +64,19 @@ public class AutonomousFoundationRight extends OpMode {
         }
 
         strafeLeft = new driveState(16, .3, motors, "strafeLeft");
-        towardsFoundation = new timeState (4500, .5, motors, "backward"); //may need to change time
-        lowerClamp = new CRServoState(3000, .25, -.25, servoDrag);
-        forwardsFoundation = new clampDriveState(28.5,.5,motors,"forwards",.5,-.5,servoDrag);
-        raiseClamp = new CRServoState(3000, -.25,.25, servoDrag);
-        strafeRight = new driveState(44,.5,motors,"strafeRight");
+        towardsFoundation = new timeState (1000, .5, motors, "backward"); //may need to change time
+        lowerClamp = new CRServoState2(1000, -.5, .5, servoDrag);
+        forwardsFoundation1 = new timeState(3000,  .5,motors, "forward");
+
+        //forwardsFoundation = new clampDriveState(28.5,.5,motors,"forwards",-.5,.5,servoDrag);
+        raiseClamp = new CRServoState(1000, .25,-.25, servoDrag);
+        strafeRight = new driveState(46,.5,motors,"strafeRight");
 
 
         strafeLeft.setNextState(towardsFoundation);
         towardsFoundation.setNextState(lowerClamp);
-        lowerClamp.setNextState(forwardsFoundation);
-        forwardsFoundation.setNextState(raiseClamp);
+        lowerClamp.setNextState(forwardsFoundation1);
+        forwardsFoundation1.setNextState(raiseClamp);
         raiseClamp.setNextState(strafeRight);
         strafeRight.setNextState(null);
 
