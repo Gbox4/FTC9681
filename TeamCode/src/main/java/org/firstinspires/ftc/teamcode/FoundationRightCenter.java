@@ -12,9 +12,9 @@ import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
 
-@Autonomous(name = "AutoFoundationRight", group = "Iterative OpMode")
+@Autonomous(name = "AutoFoundationCenter", group = "Iterative OpMode")
 
-public class AutonomousFoundationRight extends OpMode {
+public class FoundationRightCenter extends OpMode {
 
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
     CRServo drag1, drag2;
@@ -32,6 +32,8 @@ public class AutonomousFoundationRight extends OpMode {
     clampDriveState forwardsFoundation;
     CRServoState raiseClamp;
     driveState strafeRight;
+    timeState backward;
+    driveState strafeRight2;
     timeState forwardsFoundation1;
 
 
@@ -64,12 +66,15 @@ public class AutonomousFoundationRight extends OpMode {
         }
 
         strafeLeft = new driveState(16, .3, motors, "strafeLeft");
-        towardsFoundation = new timeState (800, .5, motors, "backward");
+        towardsFoundation = new timeState (800, .5, motors, "backward"); //may need to change time
         lowerClamp = new CRServoState2(1500, -.5, .5, servoDrag);
         forwardsFoundation1 = new timeState(3000,  .5, motors, "forward");
-        
+
+        //forwardsFoundation = new clampDriveState(28.5,.5,motors,"forwards",-.5,.5,servoDrag);
         raiseClamp = new CRServoState(1000, .25,-.25, servoDrag);
-        strafeRight = new driveState(46,.5,motors,"strafeRight");
+        strafeRight = new driveState(32,.5,motors,"strafeRight");
+        backward = new timeState(1000,.5,motors,"backward");
+        strafeRight2 =new driveState(16,.5,motors,"strafeRight");
 
 
         strafeLeft.setNextState(towardsFoundation);
@@ -77,7 +82,11 @@ public class AutonomousFoundationRight extends OpMode {
         lowerClamp.setNextState(forwardsFoundation1);
         forwardsFoundation1.setNextState(raiseClamp);
         raiseClamp.setNextState(strafeRight);
-        strafeRight.setNextState(null);
+
+
+        strafeRight.setNextState(backward);
+        backward.setNextState(strafeRight2);
+        strafeRight2.setNextState(null);
 
 
 

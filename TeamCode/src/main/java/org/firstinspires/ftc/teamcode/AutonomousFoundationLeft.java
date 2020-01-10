@@ -27,12 +27,12 @@ public class AutonomousFoundationLeft extends OpMode {
 
 
     driveState strafeLeft;
-    CRServoState lowerClamp;
-    clampDriveState turnFoundation;
-
-    timeState wait;
-
-    //clampDriveState dragToWall;
+    timeState towardsFoundation;
+    CRServoState2 lowerClamp;
+    clampDriveState forwardsFoundation;
+    CRServoState raiseClamp;
+    driveState strafeRight;
+    timeState forwardsFoundation1;
 
 
 
@@ -63,22 +63,24 @@ public class AutonomousFoundationLeft extends OpMode {
             servoDrag.add(drag2);
         }
 
-        strafeLeft = new driveState(40, .3, motors, "strafeRight"); //change to strafe left
-        //add backwards
-        lowerClamp = new CRServoState(3000, .25, -.25, servoDrag);
-        //turnFoundation = new clampDriveState(70, .5, motors, "turnLeft", .5, -.5, servoDrag); //maybe no turn? Do not really need
-        //dragToWall = new clampDriveState(70, .5, motors, "strafeLeft", .5, -.5, servoDrag); //change to forwards
-        //lift clamp
-        //right strafe
-        //move backwards
+        strafeLeft = new driveState(16, .3, motors, "strafeRight");
+        towardsFoundation = new timeState (800, .5, motors, "backward"); //may need to change time
+        lowerClamp = new CRServoState2(1500, -.75, .75, servoDrag);
+        forwardsFoundation1 = new timeState(3000,  .5, motors, "forward");
 
-        wait = new timeState(2000, 0, motors, "forward");
+        //forwardsFoundation = new clampDriveState(28.5,.5,motors,"forwards",-.5,.5,servoDrag);
+        raiseClamp = new CRServoState(1000, .25,-.25, servoDrag);
+        strafeRight = new driveState(46,.5,motors,"strafeLeft");
 
-        strafeLeft.setNextState(lowerClamp);
-        lowerClamp.setNextState(wait);
-        wait.setNextState(turnFoundation);
-        turnFoundation.setNextState(null);
-        //dragToWall.setNextState(null);
+
+
+        strafeLeft.setNextState(towardsFoundation);
+        towardsFoundation.setNextState(lowerClamp);
+        lowerClamp.setNextState(forwardsFoundation1);
+        forwardsFoundation1.setNextState(raiseClamp);
+        raiseClamp.setNextState(strafeRight);
+        strafeRight.setNextState(null);
+
 
 
     }
