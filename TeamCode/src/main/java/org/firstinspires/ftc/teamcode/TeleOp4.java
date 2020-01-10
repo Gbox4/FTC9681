@@ -43,7 +43,9 @@ public class TeleOp4 extends OpMode {
     DcMotor extendArm;
     CRServo claw1;
     CRServo claw2;
-    CRServo wrist;
+   // CRServo wrist;
+    Servo wrist;
+
     boolean powerControl = false;
     double powerGiven =0;
     boolean clamp = false;
@@ -75,9 +77,9 @@ public class TeleOp4 extends OpMode {
         claw2 = hardwareMap.crservo.get("claw 2");
         drag1 = hardwareMap.crservo.get("drag front");
         drag2 = hardwareMap.crservo.get("drag back");
-        wrist = hardwareMap.crservo.get("wrist");
-
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+       // wrist = hardwareMap.crservo.get("wrist");
+        wrist=hardwareMap.servo.get("wrist");
+       /* BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
@@ -90,7 +92,7 @@ public class TeleOp4 extends OpMode {
         composeTelemetry();
 
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
-
+*/
     }
 
    /* private void setRaiseArmPower(float armPower, double multiplier){
@@ -144,22 +146,16 @@ public class TeleOp4 extends OpMode {
         }
 
         //              ###DRAG SERVOS###
-        if(gamepad1.x){
+        if(gamepad1.a){
             drag1.setPower(.5);
+            drag2.setPower(-.5);
         }
         else if(gamepad1.b){
             drag1.setPower(-.5);
+            drag2.setPower(.5);
         }
         else{
             drag1.setPower(0);
-        }
-        if(gamepad1.a){
-            drag2.setPower(.5);
-        }
-        else if(gamepad1.y){
-            drag2.setPower(-.5);
-        }
-        else{
             drag2.setPower(0);
         }
 
@@ -217,13 +213,13 @@ public class TeleOp4 extends OpMode {
         }
 
 
-
-        wrist.setPower(wristAngle);
+    wrist.setPosition(wristAngle);
+       // wrist.setPower(wristAngle);
 
 
         //              ###ARM RAISING###
 
-        raiseArm2.setPower(gamepad2.left_stick_y);
+        raiseArm2.setPower(-gamepad2.left_stick_y);
 /*
         // Fast raise arm mode
         if (gamepad2.right_trigger>0){
@@ -256,14 +252,14 @@ public class TeleOp4 extends OpMode {
             }
         }*/
 
-        telemetry.update();
+       // telemetry.update();
 
 
 
 
     }
 
-    void composeTelemetry() {
+   /* void composeTelemetry() {
 
         // At the beginning of each telemetry update, grab a bunch of data
         // from the IMU that we will then display in separate lines.
@@ -333,6 +329,8 @@ public class TeleOp4 extends OpMode {
     String formatDegrees(double degrees){
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
+    */
+
 
 
 
