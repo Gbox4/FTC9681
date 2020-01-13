@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
 
-@Autonomous(name = "AutoFoundationCenter", group = "Iterative OpMode")
+@Autonomous(name = "FoundationRightCenter", group = "Iterative OpMode")
 
 public class FoundationRightCenter extends OpMode {
 
@@ -66,8 +66,8 @@ public class FoundationRightCenter extends OpMode {
         }
 
         strafeLeft = new driveState(16, .3, motors, "strafeLeft");
-        towardsFoundation = new timeState (800, .5, motors, "backward"); //may need to change time
-        lowerClamp = new CRServoState2(1500, -.5, .5, servoDrag);
+        towardsFoundation = new timeState (1000, .5, motors, "backward"); //may need to change time
+        lowerClamp = new CRServoState2(2100, -.5, .5, servoDrag);
         forwardsFoundation1 = new timeState(3000,  .5, motors, "forward");
 
         //forwardsFoundation = new clampDriveState(28.5,.5,motors,"forwards",-.5,.5,servoDrag);

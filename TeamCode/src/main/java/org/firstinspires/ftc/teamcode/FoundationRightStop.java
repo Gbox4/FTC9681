@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -9,18 +7,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-
-
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
 
-@Autonomous(name = "AutoTest1", group = "Iterative OpMode")
+@Autonomous(name = "FoundationRightStop", group = "Iterative OpMode")
 
-public class AutoTest1 extends OpMode {
+public class FoundationRightStop extends OpMode {
 
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
     CRServo drag1, drag2;
@@ -32,16 +26,14 @@ public class AutoTest1 extends OpMode {
 
 
 
+    driveState strafeLeft;
+    timeState towardsFoundation;
+    CRServoState2 lowerClamp;
+    clampDriveState forwardsFoundation;
+    CRServoState raiseClamp;
+    timeState forwardsFoundation1;
 
-    driveState backwards;
-    BNO055IMU imu;
 
-    // State used for updating telemetry
-    Orientation angles;
-    Acceleration gravity;
-
-
-   // imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
 
     @Override
@@ -68,29 +60,30 @@ public class AutoTest1 extends OpMode {
 
             servoDrag.add(drag1);
             servoDrag.add(drag2);
-            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-            parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-            parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-            parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-            parameters.loggingEnabled      = true;
-            parameters.loggingTag          = "IMU";
-            parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-            imu = hardwareMap.get(BNO055IMU.class, "imu");
-            imu.initialize(parameters);
         }
 
-        backwards = new driveState(100,.5,motors,"backwards");
+        strafeLeft = new driveState(16, .3, motors, "strafeLeft");
+        towardsFoundation = new timeState (1000, .5, motors, "backward");
+        lowerClamp = new CRServoState2(2100, -.5, .5, servoDrag);
+        forwardsFoundation1 = new timeState(3000,  .5, motors, "forward");
+
+        raiseClamp = new CRServoState(1000, .25,-.25, servoDrag);
 
 
-        backwards.setNextState(null);
+        strafeLeft.setNextState(towardsFoundation);
+        towardsFoundation.setNextState(lowerClamp);
+        lowerClamp.setNextState(forwardsFoundation1);
+        forwardsFoundation1.setNextState(raiseClamp);
+        raiseClamp.setNextState(null);
+
+
 
     }
     @Override
     public void start(){
 
 
-        machine = new StateMachine(backwards);
+        machine = new StateMachine(strafeLeft);
 
     }
     @Override
@@ -108,3 +101,4 @@ public class AutoTest1 extends OpMode {
 
 
 }
+

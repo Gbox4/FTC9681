@@ -29,7 +29,6 @@ public class AutonomousFoundationRight extends OpMode {
     driveState strafeLeft;
     timeState towardsFoundation;
     CRServoState2 lowerClamp;
-    clampDriveState forwardsFoundation;
     CRServoState raiseClamp;
     driveState strafeRight;
     timeState forwardsFoundation1;
@@ -64,9 +63,11 @@ public class AutonomousFoundationRight extends OpMode {
         }
 
         strafeLeft = new driveState(16, .3, motors, "strafeLeft");
-        towardsFoundation = new timeState (800, .5, motors, "backward");
-        lowerClamp = new CRServoState2(1500, -.5, .5, servoDrag);
+        towardsFoundation = new timeState (1000, .5, motors, "backward");
+        lowerClamp = new CRServoState2(2100, -.5, .5, servoDrag);
         forwardsFoundation1 = new timeState(3000,  .5, motors, "forward");
+
+
         
         raiseClamp = new CRServoState(1000, .25,-.25, servoDrag);
         strafeRight = new driveState(46,.5,motors,"strafeRight");
