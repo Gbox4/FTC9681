@@ -12,12 +12,13 @@ import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
 
-@Autonomous(name = "AutoFoundationLeft", group = "Iterative OpMode")
+@Autonomous(name = "FoundationLeft", group = "Iterative OpMode")
 
 public class AutonomousFoundationLeft extends OpMode {
 
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
     CRServo drag1, drag2;
+    Servo mrClamp;
     private StateMachine machine;
     ArrayList<Servo> servoPickUp= new ArrayList<Servo>();
     ArrayList<CRServo> servoDrag= new ArrayList<CRServo>();
@@ -28,12 +29,10 @@ public class AutonomousFoundationLeft extends OpMode {
 
     driveState strafeLeft;
     timeState towardsFoundation;
-    CRServoState2 lowerClamp;
-    clampDriveState forwardsFoundation;
-    CRServoState raiseClamp;
+    oneServo lowerClamp;
+    oneServo raiseClamp;
     driveState strafeRight;
     timeState forwardsFoundation1;
-    driveState strafeRight2;
 
 
 
@@ -51,7 +50,7 @@ public class AutonomousFoundationLeft extends OpMode {
 
             drag1 = hardwareMap.crservo.get("drag front");
             drag2 = hardwareMap.crservo.get("drag back");
-
+            mrClamp = hardwareMap.servo.get("mrClamp");
             frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
             backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -64,23 +63,31 @@ public class AutonomousFoundationLeft extends OpMode {
             servoDrag.add(drag2);
         }
 
-        strafeLeft = new driveState(16, .3, motors, "strafeRight");
-        towardsFoundation = new timeState (1000, .5, motors, "backward"); //may need to change time
-        lowerClamp = new CRServoState2(2000, -.75, .75, servoDrag);
-        forwardsFoundation1 = new timeState(3000,  .5, motors, "forward");
-        strafeRight2 =  new driveState(16, .3, motors, "strafeRight");
-
-        //forwardsFoundation = new clampDriveState(28.5,.5,motors,"forwards",-.5,.5,servoDrag);
-        raiseClamp = new CRServoState(1000, .25,-.25, servoDrag);
-        strafeRight = new driveState(48,.5,motors,"strafeLeft");
+        strafeLeft = new driveState(16, .3, motors, "strafeLeft");
+        towardsFoundation = new timeState (1100, .5, motors, "forward");
+        lowerClamp = new oneServo(2100, 0.37, mrClamp);
+        forwardsFoundation1 = new timeState(3000,  .5, motors, "backward");
 
 
+
+        raiseClamp = new oneServo(1000, .7, mrClamp);
+        telemetry.addData("backLeft Power is ", backLeft.getPower());
+        telemetry.addData("frontRight Power is ", frontRight.getPower());
+        telemetry.addData("frontLeft Power is ", frontLeft.getPower());
+        telemetry.addData("backRigh Power is ", backRight.getPower());
+        telemetry.update();
+
+        strafeRight = new driveState(50,.5,motors,"strafeRight");
+        telemetry.addData("backLeft Power is ", backLeft.getPower());
+        telemetry.addData("frontRight Power is ", frontRight.getPower());
+        telemetry.addData("frontLeft Power is ", frontLeft.getPower());
+        telemetry.addData("backRigh Power is ", backRight.getPower());
+        telemetry.update();
 
         strafeLeft.setNextState(towardsFoundation);
         towardsFoundation.setNextState(lowerClamp);
         lowerClamp.setNextState(forwardsFoundation1);
         forwardsFoundation1.setNextState(raiseClamp);
-       // strafeRight2.setNextState(raiseClamp);
         raiseClamp.setNextState(strafeRight);
         strafeRight.setNextState(null);
 

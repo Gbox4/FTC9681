@@ -22,14 +22,15 @@ public class TeleOp4 extends OpMode {
     CRServo claw1;
     CRServo claw2;
     Servo wrist;
-
+    Servo mrClamp;
     boolean powerControl = false;
     double powerGiven =0;
     boolean clamp = false;
     int powerButton;
     CRServo drag1, drag2;
     double wristAngle = 0;
-
+    double clampPos=.5;
+    boolean clamper=true;
 
 
     public void init() {
@@ -46,7 +47,7 @@ public class TeleOp4 extends OpMode {
         drag1 = hardwareMap.crservo.get("drag front");
         drag2 = hardwareMap.crservo.get("drag back");
         wrist=hardwareMap.servo.get("wrist");
-
+        mrClamp = hardwareMap.servo.get("mrClamp");
     }
 
 
@@ -93,12 +94,12 @@ public class TeleOp4 extends OpMode {
             powerButton =2;
         }
 
-        //              ###DRAG SERVOS###
-        if(gamepad1.a){
+        //              ###CAPSTONE SERVOS###
+        if(gamepad1.x){
             drag1.setPower(.5);
             drag2.setPower(-.5);
         }
-        else if(gamepad1.b){
+        else if(gamepad1.y){
             drag1.setPower(-.5);
             drag2.setPower(.5);
         }
@@ -108,6 +109,18 @@ public class TeleOp4 extends OpMode {
         }
 
 
+        //           ###FOUNDATION SERVO###
+        if (gamepad1.a && clampPos>.28){
+            clampPos  -= 0.01;
+        }
+        else if (gamepad1.b && clampPos<.90){
+            clampPos += 0.01;
+        }
+
+
+        mrClamp.setPosition(clampPos);
+        telemetry.addData("clampPos = ", clampPos);
+        telemetry.update();
 
         //          -----GAME PAD 2-----
 
@@ -128,6 +141,7 @@ public class TeleOp4 extends OpMode {
             claw1.setPower(-1);
             claw2.setPower(1);
         }
+
 
 
         //              ###ARM EXTENSION###

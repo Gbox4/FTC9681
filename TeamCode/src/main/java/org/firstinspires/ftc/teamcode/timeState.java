@@ -88,6 +88,18 @@ public class timeState implements State {
                 rightBack.setPower(-Power);
 
             }
+            if(Movement == "strafeRight"){
+                leftBack.setPower(-Power);
+                leftFront.setPower(Power);//negative
+                rightBack.setPower(Power); //negative
+                rightFront.setPower(-Power);
+            }
+            if(Movement == "strafeLeft"){
+                leftBack.setPower(Power);
+                leftFront.setPower(-Power);//negative
+                rightBack.setPower(-Power); //negative
+                rightFront.setPower(Power);
+            }
             return this;
         }
         if(Time<=mRuntime.milliseconds()){

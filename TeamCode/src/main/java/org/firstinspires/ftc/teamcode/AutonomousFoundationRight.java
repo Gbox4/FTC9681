@@ -12,12 +12,13 @@ import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
 
-@Autonomous(name = "AutoFoundationRight", group = "Iterative OpMode")
+@Autonomous(name = "FoundationRight", group = "Iterative OpMode")
 
 public class AutonomousFoundationRight extends OpMode {
 
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
     CRServo drag1, drag2;
+    Servo mrClamp;
     private StateMachine machine;
     ArrayList<Servo> servoPickUp= new ArrayList<Servo>();
     ArrayList<CRServo> servoDrag= new ArrayList<CRServo>();
@@ -28,8 +29,8 @@ public class AutonomousFoundationRight extends OpMode {
 
     driveState strafeLeft;
     timeState towardsFoundation;
-    CRServoState2 lowerClamp;
-    CRServoState raiseClamp;
+    oneServo lowerClamp;
+    oneServo raiseClamp;
     driveState strafeRight;
     timeState forwardsFoundation1;
 
@@ -49,7 +50,7 @@ public class AutonomousFoundationRight extends OpMode {
 
             drag1 = hardwareMap.crservo.get("drag front");
             drag2 = hardwareMap.crservo.get("drag back");
-
+            mrClamp = hardwareMap.servo.get("mrClamp");
             frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
             backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -62,15 +63,15 @@ public class AutonomousFoundationRight extends OpMode {
             servoDrag.add(drag2);
         }
 
-        strafeLeft = new driveState(16, .3, motors, "strafeLeft");
-        towardsFoundation = new timeState (1000, .5, motors, "backward");
-        lowerClamp = new CRServoState2(2100, -.5, .5, servoDrag);
-        forwardsFoundation1 = new timeState(3000,  .5, motors, "forward");
+        strafeLeft = new driveState(16, .3, motors, "strafeRight");
+        towardsFoundation = new timeState (1100, .5, motors, "forward");
+        lowerClamp = new oneServo(2100, 0.37, mrClamp);
+        forwardsFoundation1 = new timeState(3000,  .5, motors, "backward");
 
 
         
-        raiseClamp = new CRServoState(1000, .25,-.25, servoDrag);
-        strafeRight = new driveState(46,.5,motors,"strafeRight");
+        raiseClamp = new oneServo(1000, .7, mrClamp);
+        strafeRight = new driveState(50,.5,motors,"strafeLeft");
 
 
         strafeLeft.setNextState(towardsFoundation);
