@@ -27,10 +27,12 @@ public class TeleOp4 extends OpMode {
     double powerGiven =0;
     boolean clamp = false;
     int powerButton;
-    CRServo drag1, drag2;
+    Servo drag1;
+    CRServo drag2;
     double wristAngle = 0;
     double clampPos=.5;
     boolean clamper=true;
+    double draga = 0.43;
 
 
     public void init() {
@@ -44,7 +46,7 @@ public class TeleOp4 extends OpMode {
         extendArm = hardwareMap.dcMotor.get("extend arm");
         claw1 = hardwareMap.crservo.get("claw 1");
         claw2 = hardwareMap.crservo.get("claw 2");
-        drag1 = hardwareMap.crservo.get("drag front");
+        drag1 = hardwareMap.servo.get("drag front");
         drag2 = hardwareMap.crservo.get("drag back");
         wrist=hardwareMap.servo.get("wrist");
         mrClamp = hardwareMap.servo.get("mrClamp");
@@ -95,32 +97,46 @@ public class TeleOp4 extends OpMode {
         }
 
         //              ###CAPSTONE SERVOS###
-        if(gamepad1.x){
-            drag1.setPower(.5);
+       /* if(gamepad1.x){
+            drag1.setPosition(.5);
             drag2.setPower(-.5);
+            telemetry.addData("Drag 1 is ", drag1.getPosition());
+            telemetry.update();
         }
-        else if(gamepad1.y){
-            drag1.setPower(-.5);
+        else if(gamepad1.b){
+            drag1.setPosition(-.5);
             drag2.setPower(.5);
         }
-        else{
-            drag1.setPower(0);
+        else if(gamepad1.a){
+            drag1.setPosition(0);
             drag2.setPower(0);
+        }*/
+
+        if (gamepad1.a && draga > -.5){
+            draga  -= 0.01;
         }
+        else if (gamepad1.b && draga< .43){
+            draga += 0.01;
+        }
+
+        drag1.setPosition(draga);
+        telemetry.addData("Drag servo pos is", draga);
+
+
 
 
         //           ###FOUNDATION SERVO###
-        if (gamepad1.a && clampPos>.28){
+        if (gamepad1.right_bumper && clampPos>.28){
             clampPos  -= 0.01;
         }
-        else if (gamepad1.b && clampPos<.90){
+        else if (gamepad1.left_bumper && clampPos<.90){
             clampPos += 0.01;
         }
 
 
         mrClamp.setPosition(clampPos);
-        telemetry.addData("clampPos = ", clampPos);
-        telemetry.update();
+        //telemetry.addData("clampPos = ", clampPos);
+      //  telemetry.update();
 
         //          -----GAME PAD 2-----
 
@@ -136,6 +152,7 @@ public class TeleOp4 extends OpMode {
         else if (!clamp){
             claw1.setPower(0);
             claw2.setPower(0);
+
         }
         if (clamp){
             claw1.setPower(-1);
