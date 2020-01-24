@@ -37,8 +37,7 @@ public class TeleOp3 extends OpMode {
     DcMotor frontRight;
     DcMotor frontLeft;
     ElapsedTime runtime;
-    //DcMotor backRight;
-    //DcMotor backLeft;
+
     DcMotor raiseArm1;
     DcMotor raiseArm2;
     DcMotor extendArm;
@@ -48,6 +47,7 @@ public class TeleOp3 extends OpMode {
     double powerGiven =0;
     int powerButton;
     double pos1 = 0.9;
+
     double pos2 = 0.1;
     //CRServo drag1, drag2;
     boolean prevx = false;
@@ -95,7 +95,6 @@ public class TeleOp3 extends OpMode {
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
-        composeTelemetry();
 
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         //    touchSense = hardwareMap.get(DigitalChannel.class, "sensor_digital");
@@ -128,20 +127,6 @@ public class TeleOp3 extends OpMode {
     }
 
     public void loop() {
-        //In place of motor power, gamestick position is used determined by the controller
-
-        /*
-        float move = -gamepad1.left_stick_y;
-        float rotation = -gamepad1.right_stick_x;
-        float crabWalk = gamepad1.left_stick_x;
-
-        //Wheels: Holonomic drive formula uses values of gamestick position to move
-        double fLeftPower = Range.clip(move + rotation + crabWalk, -1.0, 1.0);
-        double bLeftPower = Range.clip(move + rotation - crabWalk, -1.0, 1.0);
-        double fRightPower = Range.clip(move - rotation - crabWalk, -1.0, 1.0);
-        double bRightPower = Range.clip(move - rotation + crabWalk, -1.0, 1.0);
-
-         */
 
         frontRight.setPower(gamepad1.right_stick_y/powerButton);
         frontLeft.setPower(gamepad1.left_stick_y/powerButton);
@@ -151,12 +136,6 @@ public class TeleOp3 extends OpMode {
         //frontLeft.setPower(fLeftPower/powerButton);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        //backLeft.setPower(bLeftPower/powerButton);
-        //backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        //frontRight.setPower(fRightPower/powerButton);
-
-        //backRight.setPower(bRightPower/powerButton);
 
         raiseArm1.setDirection(DcMotorSimple.Direction.REVERSE);
         raiseArm2.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -221,7 +200,7 @@ public class TeleOp3 extends OpMode {
             claw2.setPosition(claw2.getPosition());
         }*/
 
-      if(gamepad2.x&& !prevx){
+/*      if(gamepad2.x&& !prevx){
             prevx=true;
             pos1+= .1;
         }
@@ -235,7 +214,7 @@ public class TeleOp3 extends OpMode {
         }
         else{
             prevy=false;
-        }
+        }*/
 
 
         if(gamepad2.left_bumper){
@@ -245,25 +224,8 @@ public class TeleOp3 extends OpMode {
             pos2 -= .1;
         }
 
-      claw1.setPosition(pos1);
-      claw2.setPosition(pos2);
-
-        /*if (gamepad2.x){
-            clamp = true;
-        }
-        if (gamepad2.y){
-            claw1.setPower(1);
-            claw2.setPower(-1);
-            clamp = false;
-        }
-        else if (!clamp){
-            claw1.setPower(0);
-            claw2.setPower(0);
-        }
-        if (clamp){
-            claw1.setPower(-1);
-            claw2.setPower(1);
-        }*/
+      claw1.setPosition(pos2);
+//      claw2.setPosition(pos2);
 
 
         extendArm.setPower(-gamepad2.right_stick_y); //extends cascading rail slides
@@ -325,64 +287,6 @@ public class TeleOp3 extends OpMode {
 
         telemetry.update();
 
-    }
-    void composeTelemetry() {
-
-        // At the beginning of each telemetry update, grab a bunch of data
-        // from the IMU that we will then display in separate lines.
-        telemetry.addAction(new Runnable() { @Override public void run()
-        {
-            // Acquiring the angles is relatively expensive; we don't want
-            // to do that in each of the three items that need that info, as that's
-            // three times the necessary expense.
-            angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            gravity  = imu.getGravity();
-        }
-        });
-
-        telemetry.addLine()
-                .addData("status", new Func<String>() {
-                    @Override public String value() {
-                        return imu.getSystemStatus().toShortString();
-                    }
-                })
-                .addData("calib", new Func<String>() {
-                    @Override public String value() {
-                        return imu.getCalibrationStatus().toString();
-                    }
-                });
-
-        telemetry.addLine()
-                .addData("heading", new Func<String>() {
-                    @Override public String value() {
-                        return formatAngle(angles.angleUnit, angles.firstAngle);
-                    }
-                })
-                .addData("roll", new Func<String>() {
-                    @Override public String value() {
-                        return formatAngle(angles.angleUnit, angles.secondAngle);
-                    }
-                })
-                .addData("pitch", new Func<String>() {
-                    @Override public String value() {
-                        return formatAngle(angles.angleUnit, angles.thirdAngle);
-                    }
-                });
-
-        telemetry.addLine()
-                .addData("grvty", new Func<String>() {
-                    @Override public String value() {
-                        return gravity.toString();
-                    }
-                })
-                .addData("mag", new Func<String>() {
-                    @Override public String value() {
-                        return String.format(Locale.getDefault(), "%.3f",
-                                Math.sqrt(gravity.xAccel*gravity.xAccel
-                                        + gravity.yAccel*gravity.yAccel
-                                        + gravity.zAccel*gravity.zAccel));
-                    }
-                });
     }
 
     //----------------------------------------------------------------------------------------------
