@@ -70,26 +70,25 @@ public class AutonomousFoundationLeft extends OpMode {
         towardsFoundation = new timeState (1100, .5, motors, "forward");
         lowerClamp = new oneServo(2100, 0.28, mrClamp);
         forwardsFoundation1 = new timeState(4000,  .4, motors, "backward");
-
-
-
-        raiseClamp = new oneServo(1000, .7, mrClamp);
-        telemetry.addData("backLeft Power is ", backLeft.getPower());
-        telemetry.addData("frontRight Power is ", frontRight.getPower());
-        telemetry.addData("frontLeft Power is ", frontLeft.getPower());
-        telemetry.addData("backRigh Power is ", backRight.getPower());
-        telemetry.update();
-
-        strafeRight = new driveState(50,.5,motors,"strafeRight");
-        telemetry.addData("backLeft Power is ", backLeft.getPower());
-        telemetry.addData("frontRight Power is ", frontRight.getPower());
-        telemetry.addData("frontLeft Power is ", frontLeft.getPower());
-        telemetry.addData("backRigh Power is ", backRight.getPower());
-        telemetry.update();
-
         turnLeft = new timeState(1000, .5, motors, "turnLeft");
-
         down = new markerServoState(1000, -.5, drag1);
+        raiseClamp = new oneServo(1000, .7, mrClamp);
+        strafeRight = new driveState(50,.5,motors,"strafeRight");
+
+
+        telemetry.addData("backLeft Power is ", backLeft.getPower());
+        telemetry.addData("frontRight Power is ", frontRight.getPower());
+        telemetry.addData("frontLeft Power is ", frontLeft.getPower());
+        telemetry.addData("backRigh Power is ", backRight.getPower());
+        telemetry.update();
+
+        telemetry.addData("backLeft Power is ", backLeft.getPower());
+        telemetry.addData("frontRight Power is ", frontRight.getPower());
+        telemetry.addData("frontLeft Power is ", frontLeft.getPower());
+        telemetry.addData("backRigh Power is ", backRight.getPower());
+        telemetry.update();
+
+
 
         strafeLeft.setNextState(towardsFoundation);
         towardsFoundation.setNextState(lowerClamp);
