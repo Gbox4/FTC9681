@@ -32,7 +32,7 @@ public class extendArmState implements State {
         extendArm = extend;
 
         Power = power;
-        mRuntime.reset();
+
 
     }
 
@@ -43,7 +43,7 @@ public class extendArmState implements State {
 
     @Override
     public void start() {
-
+        mRuntime.reset();
 
     }
 
@@ -58,7 +58,7 @@ public class extendArmState implements State {
             return this;
 
         }
-        if (Time <= mRuntime.seconds()) {
+        if (Time <= mRuntime.milliseconds()) {
             extendArm.setPower(0);
             // return NextState;
         }

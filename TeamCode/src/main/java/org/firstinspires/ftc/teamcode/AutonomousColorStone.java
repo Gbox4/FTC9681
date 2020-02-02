@@ -11,9 +11,9 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "AutoStone", group = "Iterative OpMode")
+@Autonomous(name = "AutoColorStone", group = "Iterative OpMode")
 
-public class AutonomousStone extends OpMode {
+public class AutonomousColorStone extends OpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
     //CRServo claw1, claw2;
     CRServo claw1, claw2;
@@ -22,6 +22,7 @@ public class AutonomousStone extends OpMode {
     ColorSensor mrSensor;
     Servo mrServo;
 
+    oneServo sensorDown;
     timeState forward;
     driveState strafeLeft;
     extendArmState reachOut;
@@ -32,6 +33,11 @@ public class AutonomousStone extends OpMode {
     CRServoState open;
     CRServoState2 close2;
     timeState park;
+    ColorState colorState;
+    ColorState colorState2;
+    timeState backwards;
+    timeState backwards2;
+    driveState strafeLeftAgain;
 
 
     ArrayList<Servo> servoPickUp= new ArrayList<Servo>();
@@ -74,7 +80,13 @@ public class AutonomousStone extends OpMode {
         crServos.add(claw2);
 
         //orward = new timeState (1100, .5, motors, "forward"); //without encoders
-        strafeLeft = new driveState(44, .3, motors, "strafeLeft");
+        sensorDown = new oneServo(500, -1, mrServo);
+        strafeLeft = new driveState(28, .3, motors, "strafeLeft");
+        colorState = new ColorState(motors, mrSensor);
+        backwards = new timeState(600, .5, motors, "backward");
+        colorState2 = new ColorState(motors, mrSensor);
+        backwards2 = new timeState(400, .5, motors, "backward");
+        strafeLeftAgain = new driveState(16, .5, motors, "strafeLeft");
         reachOut = new extendArmState(1200, -.5, extendArm);
         close = new CRServoState2(1500,-1,1, crServos);
         strafeRight = new clampDriveState(18,.5, motors, "strafeRight", -1, 1, crServos);
@@ -92,7 +104,12 @@ public class AutonomousStone extends OpMode {
         //let go
 
 
-        strafeLeft.setNextState(reachOut);
+        strafeLeft.setNextState(colorState);
+        colorState.setNextState(backwards);
+        backwards.setNextState(colorState2);
+        colorState2.setNextState(backwards2);
+        backwards2.setNextState(strafeLeftAgain);
+        strafeLeftAgain.setNextState(reachOut);
         reachOut.setNextState(close);
         close.setNextState(strafeRight);
         strafeRight.setNextState(close2);
@@ -125,3 +142,4 @@ public class AutonomousStone extends OpMode {
 
 
 }
+

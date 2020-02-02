@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
@@ -33,6 +34,8 @@ public class TeleOp4 extends OpMode {
     double clampPos=.5;
     boolean clamper=true;
     double draga = 0.43;
+    Servo mrServo;
+    ColorSensor mrSensor;
 
 
     public void init() {
@@ -50,6 +53,8 @@ public class TeleOp4 extends OpMode {
         drag2 = hardwareMap.crservo.get("drag back");
         wrist=hardwareMap.servo.get("wrist");
         mrClamp = hardwareMap.servo.get("mrClamp");
+        mrServo = hardwareMap.servo.get("mrServo");
+        mrSensor = hardwareMap.colorSensor.get("mrSensor");
     }
 
 
@@ -124,6 +129,8 @@ public class TeleOp4 extends OpMode {
 
 
 
+        telemetry.addData("this is the mrServo", mrServo.getPosition());
+        telemetry.addData("mrSensor values", mrSensor.alpha());
 
         //           ###FOUNDATION SERVO###
         if (gamepad1.right_bumper && clampPos>.28){
