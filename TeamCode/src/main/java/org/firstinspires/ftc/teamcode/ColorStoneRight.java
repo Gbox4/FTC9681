@@ -80,9 +80,9 @@ public class ColorStoneRight extends OpMode {
 
         //orward = new timeState (1100, .5, motors, "forward"); //without encoders
         strafeRight = new driveState(28, .3, motors, "strafeRight");
-        colorState = new ColorState(motors, mrSensor);
+        colorState = new ColorState(motors, mrSensor,"forward");
         backwards = new timeState(600, .5, motors, "backward");
-        colorState2 = new ColorState(motors, mrSensor);
+        colorState2 = new ColorState(motors, mrSensor,"forward");
         backwards2 = new timeState(400, .5, motors, "backward");
         strafeRightAgain = new driveState(16, .5, motors, "strafeRight");
         reachOut = new extendArmState(1200, -.5, extendArm);

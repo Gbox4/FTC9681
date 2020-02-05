@@ -33,14 +33,14 @@ public class ColorState implements State {
     DcMotor rightBack;
     boolean checker = false;
     private State NextState;
-
+    String direction;
     private double totalTime;
     ElapsedTime mRuntime = new ElapsedTime();
     boolean reset = true;
 
 
-    public ColorState(ArrayList<DcMotor> motor, ColorSensor colorSensor) {
-
+    public ColorState(ArrayList<DcMotor> motor, ColorSensor colorSensor, String movement) {
+        direction = movement;
         leftFront = motor.get(0);
         rightFront = motor.get(1);
         leftBack = motor.get(2);
@@ -69,10 +69,18 @@ public class ColorState implements State {
             reset = false;
         }
         if (mrSensor.alpha() > 10) {
-            leftFront.setPower(.2);
-            rightFront.setPower(.2);
-            leftBack.setPower(.2);
-            rightBack.setPower(.2);
+           if(direction == "backward"){
+               leftFront.setPower(-.2);
+               rightFront.setPower(-.2);
+               leftBack.setPower(-.2);
+               rightBack.setPower(-.2);
+           }
+            else{
+                leftFront.setPower(.2);
+                rightFront.setPower(.2);
+                leftBack.setPower(.2);
+                rightBack.setPower(.2);
+            }
             return this;
         } else {
             totalTime = mRuntime.milliseconds(); //sees block

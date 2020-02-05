@@ -38,6 +38,7 @@ public class AutonomousColorStone extends OpMode {
     timeState backwards;
     timeState backwards2;
     driveState strafeLeftAgain;
+    timeState stop;
 
 
     ArrayList<Servo> servoPickUp= new ArrayList<Servo>();
@@ -81,15 +82,16 @@ public class AutonomousColorStone extends OpMode {
 
         //orward = new timeState (1100, .5, motors, "forward"); //without encoders
         sensorDown = new oneServo(500, -1, mrServo);
-        strafeLeft = new driveState(28, .3, motors, "strafeLeft");
-        colorState = new ColorState(motors, mrSensor);
+        strafeLeft = new driveState(30, .9, motors, "strafeLeft"); //before 28
+        colorState = new ColorState(motors, mrSensor,"forward");
         backwards = new timeState(600, .5, motors, "backward");
-        colorState2 = new ColorState(motors, mrSensor);
+        colorState2 = new ColorState(motors, mrSensor,"forward");
         backwards2 = new timeState(400, .5, motors, "backward");
-        strafeLeftAgain = new driveState(16, .5, motors, "strafeLeft");
+        stop = new timeState(500, 0, motors, "forward");
+        strafeLeftAgain = new driveState(16, .9, motors, "strafeLeft");
         reachOut = new extendArmState(1200, -.5, extendArm);
         close = new CRServoState2(1500,-1,1, crServos);
-        strafeRight = new clampDriveState(18,.5, motors, "strafeRight", -1, 1, crServos);
+        strafeRight = new clampDriveState(18,.9, motors, "strafeRight", -1, 1, crServos);
         close2 = new CRServoState2(1500, -1, 1, crServos);
         turnLeft = new timeState(2000, .5, motors, "turnLeft");
         forward = new timeState(1500, .5, motors, "forward");
@@ -108,7 +110,8 @@ public class AutonomousColorStone extends OpMode {
         colorState.setNextState(backwards);
         backwards.setNextState(colorState2);
         colorState2.setNextState(backwards2);
-        backwards2.setNextState(strafeLeftAgain);
+        backwards2.setNextState(stop);
+        stop.setNextState(strafeLeftAgain);
         strafeLeftAgain.setNextState(reachOut);
         reachOut.setNextState(close);
         close.setNextState(strafeRight);
