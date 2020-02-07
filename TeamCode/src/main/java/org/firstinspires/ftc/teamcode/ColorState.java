@@ -34,12 +34,15 @@ public class ColorState implements State {
     boolean checker = false;
     private State NextState;
     String direction;
+    String color;
     private double totalTime;
     ElapsedTime mRuntime = new ElapsedTime();
     boolean reset = true;
+    int time1 = 0;
 
-
-    public ColorState(ArrayList<DcMotor> motor, ColorSensor colorSensor, String movement) {
+    public ColorState(ArrayList<DcMotor> motor, ColorSensor colorSensor, String movement, String color1, int time) {
+       time1=time;
+        color=color1;
         direction = movement;
         leftFront = motor.get(0);
         rightFront = motor.get(1);
@@ -68,28 +71,28 @@ public class ColorState implements State {
             mRuntime.reset();
             reset = false;
         }
-        if (mrSensor.alpha() > 10) {
-           if(direction == "backward"){
-               leftFront.setPower(-.2);
-               rightFront.setPower(-.2);
-               leftBack.setPower(-.2);
-               rightBack.setPower(-.2);
-           }
-            else{
-                leftFront.setPower(.2);
-                rightFront.setPower(.2);
-                leftBack.setPower(.2);
-                rightBack.setPower(.2);
-            }
-            return this;
-        } else {
-            totalTime = mRuntime.milliseconds(); //sees block
-            rightFront.setPower(0);
-            leftFront.setPower(0);
-            rightBack.setPower(0);
-            leftBack.setPower(0);
-            // return NextState;
-          //  mRuntime.reset();
+        if(color == "alpha") {
+            if (mrSensor.alpha() > 10 && mRuntime.milliseconds() < time1) {
+                if (direction == "backward") {
+                    leftFront.setPower(-.2);
+                    rightFront.setPower(-.2);
+                    leftBack.setPower(-.2);
+                    rightBack.setPower(-.2);
+                } else {
+                    leftFront.setPower(.2);
+                    rightFront.setPower(.2);
+                    leftBack.setPower(.2);
+                    rightBack.setPower(.2);
+                }
+                return this;
+            } else {
+                totalTime = mRuntime.milliseconds(); //sees block
+                rightFront.setPower(0);
+                leftFront.setPower(0);
+                rightBack.setPower(0);
+                leftBack.setPower(0);
+                // return NextState;
+                //  mRuntime.reset();
            /* while (mRuntime.milliseconds() < totalTime) {
                 rightFront.setPower(-.5);
                 leftFront.setPower(-.5);
@@ -97,9 +100,74 @@ public class ColorState implements State {
                 leftBack.setPower(-.5);
             }*/
 
-return NextState;
+                return NextState;
+            }
         }
+       else if(color == "blue") {
+            if (mrSensor.blue() > 10 && mRuntime.milliseconds() < time1) {
+                if (direction == "backward") {
+                    leftFront.setPower(-.2);
+                    rightFront.setPower(-.2);
+                    leftBack.setPower(-.2);
+                    rightBack.setPower(-.2);
+                } else {
+                    leftFront.setPower(.2);
+                    rightFront.setPower(.2);
+                    leftBack.setPower(.2);
+                    rightBack.setPower(.2);
+                }
+                return this;
+            } else {
+                totalTime = mRuntime.milliseconds(); //sees block
+                rightFront.setPower(0);
+                leftFront.setPower(0);
+                rightBack.setPower(0);
+                leftBack.setPower(0);
+                // return NextState;
+                //  mRuntime.reset();
+           /* while (mRuntime.milliseconds() < totalTime) {
+                rightFront.setPower(-.5);
+                leftFront.setPower(-.5);
+                rightBack.setPower(-.5);
+                leftBack.setPower(-.5);
+            }*/
 
+                return NextState;
+            }
+        }
+    else{
+            if (mrSensor.red() > 10 && mRuntime.milliseconds() < time1) {
+                if (direction == "backward") {
+                    leftFront.setPower(-.2);
+                    rightFront.setPower(-.2);
+                    leftBack.setPower(-.2);
+                    rightBack.setPower(-.2);
+                } else {
+                    leftFront.setPower(.2);
+                    rightFront.setPower(.2);
+                    leftBack.setPower(.2);
+                    rightBack.setPower(.2);
+                }
+                return this;
+            } else {
+                totalTime = mRuntime.milliseconds(); //sees block
+                rightFront.setPower(0);
+                leftFront.setPower(0);
+                rightBack.setPower(0);
+                leftBack.setPower(0);
+                // return NextState;
+                //  mRuntime.reset();
+           /* while (mRuntime.milliseconds() < totalTime) {
+                rightFront.setPower(-.5);
+                leftFront.setPower(-.5);
+                rightBack.setPower(-.5);
+                leftBack.setPower(-.5);
+            }*/
+
+                return NextState;
+            }
+
+        }
     }
 }
 

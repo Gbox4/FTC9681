@@ -23,10 +23,10 @@ public class ColorStoneRight extends OpMode {
     Servo mrServo;
 
     timeState forward;
-    driveState strafeRight;
+    driveState strafeLeft;
     extendArmState reachOut;
     private StateMachine machine;
-    clampDriveState strafeLeft;
+    clampDriveState strafeRight;
     timeState turnLeft;
     CRServoState2 close;
     CRServoState open;
@@ -79,17 +79,17 @@ public class ColorStoneRight extends OpMode {
         crServos.add(claw2);
 
         //orward = new timeState (1100, .5, motors, "forward"); //without encoders
-        strafeRight = new driveState(28, .3, motors, "strafeRight");
-        colorState = new ColorState(motors, mrSensor,"forward");
-        backwards = new timeState(600, .5, motors, "backward");
-        colorState2 = new ColorState(motors, mrSensor,"forward");
+        strafeLeft = new driveState(28, .3, motors, "strafeLeft");
+        colorState = new ColorState(motors, mrSensor,"backward","alpha",4500);
+        backwards = new timeState(1000, .5, motors, "backward");
+        colorState2 = new ColorState(motors, mrSensor,"forward","alpha",800);
         backwards2 = new timeState(400, .5, motors, "backward");
-        strafeRightAgain = new driveState(16, .5, motors, "strafeRight");
+        strafeRightAgain = new driveState(16, .5, motors, "strafeLeft");
         reachOut = new extendArmState(1200, -.5, extendArm);
         close = new CRServoState2(1500,-1,1, crServos);
-        strafeLeft = new clampDriveState(18,.5, motors, "strafeLeft", -1, 1, crServos);
+        strafeRight = new clampDriveState(18,.5, motors, "strafeRight", -1, 1, crServos);
         close2 = new CRServoState2(1500, -1, 1, crServos);
-        turnLeft = new timeState(2000, .5, motors, "turnLeft");
+        //turnLeft = new timeState(2000, .5, motors, "turnLeft");
         forward = new timeState(1500, .5, motors, "forward");
         open = new CRServoState(1000, 1, -1, crServos);
         park = new timeState (700, .5, motors, "backward");
@@ -102,17 +102,18 @@ public class ColorStoneRight extends OpMode {
         //let go
 
 
-        strafeRight.setNextState(colorState);
+        strafeLeft.setNextState(colorState);
         colorState.setNextState(backwards);
         backwards.setNextState(colorState2);
         colorState2.setNextState(backwards2);
         backwards2.setNextState(strafeRightAgain);
         strafeRightAgain.setNextState(reachOut);
         reachOut.setNextState(close);
-        close.setNextState(strafeLeft);
-        strafeLeft.setNextState(close2);
-        close2.setNextState(turnLeft);
-        turnLeft.setNextState(forward);
+        close.setNextState(strafeRight);
+        strafeRight.setNextState(close2);
+       // close2.setNextState(turnLeft);
+        //turnLeft.setNextState(forward);
+        close2.setNextState(forward);
         forward.setNextState(open);
         open.setNextState(park);
         park.setNextState(null);
