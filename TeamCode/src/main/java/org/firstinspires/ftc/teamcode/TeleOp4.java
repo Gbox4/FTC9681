@@ -33,7 +33,7 @@ public class TeleOp4 extends OpMode {
     double wristAngle = 0;
     double clampPos=.5;
     boolean clamper=true;
-    double draga = 0.43;
+    double draga = -0.3;
     Servo mrServo;
     double mrServox = .5;
     ColorSensor mrSensor;
@@ -104,15 +104,16 @@ public class TeleOp4 extends OpMode {
 
 
         //              ###CAPSTONE SERVO###
-        if (gamepad1.a && draga > -.5){
+        if (gamepad1.b/* && draga > -.5*/){
             draga  -= 0.01;
         }
-        else if (gamepad1.b && draga< .43){
+        else if (gamepad1.a/* && draga< .43*/){
             draga += 0.01;
         }
 
         drag1.setPosition(draga);
-        telemetry.addData("Drag servo pos is", draga);
+        telemetry.addData("Drag servo pos should be", draga);
+        telemetry.addData("what it atually is", drag1.getPosition());
 
         //             ###
         if (gamepad1.x && mrServox > -.5) {
