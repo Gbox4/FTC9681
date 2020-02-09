@@ -109,14 +109,18 @@ public class TeleOp2 extends OpMode {
         //              ###DRAG SERVOS###
         if(gamepad1.a){
             drag1.setPower(.5);
+            drag2.setPower(-.5);
         }
         else if(gamepad1.b){
             drag1.setPower(-.5);
+            drag2.setPower(.5);
         }
         else{
             drag1.setPower(0);
+            drag2.setPower(0);
         }
-        if(gamepad1.x){
+
+        /* if(gamepad1.x){
             drag2.setPower(.5);
         }
         else if(gamepad1.y){
@@ -124,7 +128,8 @@ public class TeleOp2 extends OpMode {
         }
         else{
             drag2.setPower(0);
-        }
+        }*/
+
 
 
 
@@ -215,6 +220,37 @@ public class TeleOp2 extends OpMode {
                 setRaiseArmPower(0.23f, 1);
             }
         }
+        /*
+        // Fast raise arm mode
+        if (gamepad2.right_trigger>0){
+            //If the driver is trying to move the arm up:
+            if (rawRaiseValue > 0) {
+                setRaiseArmPower(rawRaiseValue, 0.6);
+            }
+            //If the driver is trying to move the arm down:
+            else if (rawRaiseValue < 0) {
+                setRaiseArmPower(0.1f, 0.35);
+            }
+            //If the driver is not moving the arm
+            /*else {
+                setRaiseArmPower(0.23f, 1);
+            }
+        }
+        // Slow raise arm mode
+     /*   else {
+            //If the driver is trying to move the arm up:
+            if (rawRaiseValue > 0) {
+                setRaiseArmPower(rawRaiseValue, 0.35);
+            }
+            //If the driver is trying to move the arm down:
+            else if (rawRaiseValue < 0) {
+                setRaiseArmPower(0f, 1);
+            }
+            //If the driver is not moving the arm
+           /* else {
+                setRaiseArmPower(0.23f, 1);
+            }
+        }*/
 
 
 

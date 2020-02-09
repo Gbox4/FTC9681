@@ -1,42 +1,20 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.drm.DrmStore;
-import android.util.Log;
-
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import org.firstinspires.ftc.teamcode.pickUpState; //necessary
-import org.firstinspires.ftc.teamcode.timeState; //necessar
 
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.StateMachine; //necessary
-import org.firstinspires.ftc.teamcode.StateMachine.State; //necessary
 import java.util.ArrayList;
-import java.util.Locale;
 
 import static java.lang.Thread.sleep;
 
-@Autonomous(name = "AutoTest1", group = "Iterative OpMode")
+@Autonomous(name = "FoundationLeftStop", group = "Iterative OpMode")
 
-public class AutoTest1 extends OpMode {
+public class FoundationLeftStop extends OpMode {
 
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
     CRServo drag1, drag2;
@@ -48,9 +26,12 @@ public class AutoTest1 extends OpMode {
 
 
 
-
-    clampDriveState backwards;
-
+    driveState strafeLeft;
+    timeState towardsFoundation;
+    CRServoState2 lowerClamp;
+    clampDriveState forwardsFoundation;
+    CRServoState raiseClamp;
+    timeState forwardsFoundation1;
 
 
 
@@ -81,17 +62,30 @@ public class AutoTest1 extends OpMode {
             servoDrag.add(drag2);
         }
 
-        backwards = new clampDriveState(40,-.5,motors,"backwards",.5,-.5,servoDrag);
+        strafeLeft = new driveState(16, .3, motors, "strafeRight");
+        towardsFoundation = new timeState (1000, .5, motors, "backward"); //may need to change time
+        lowerClamp = new CRServoState2(2100, -.75, .75, servoDrag);
+        forwardsFoundation1 = new timeState(3000,  .5, motors, "forward");
+
+        //forwardsFoundation = new clampDriveState(28.5,.5,motors,"forwards",-.5,.5,servoDrag);
+        raiseClamp = new CRServoState(1000, .25,-.25, servoDrag);
 
 
-        backwards.setNextState(null);
+
+        strafeLeft.setNextState(towardsFoundation);
+        towardsFoundation.setNextState(lowerClamp);
+        lowerClamp.setNextState(forwardsFoundation1);
+        forwardsFoundation1.setNextState(raiseClamp);
+        raiseClamp.setNextState(null);
+
+
 
     }
     @Override
     public void start(){
 
 
-        machine = new StateMachine(backwards);
+        machine = new StateMachine(strafeLeft);
 
     }
     @Override

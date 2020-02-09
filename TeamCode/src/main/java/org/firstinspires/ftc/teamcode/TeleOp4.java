@@ -3,19 +3,14 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
+
 import com.qualcomm.robotcore.hardware.Servo;
+
 
 @TeleOp(name ="TeleOp4", group = "TeleOP")
 public class TeleOp4 extends OpMode {
@@ -23,45 +18,46 @@ public class TeleOp4 extends OpMode {
     DcMotor frontLeft;
     DcMotor backRight;
     DcMotor backLeft;
-    DcMotor raiseArm1;
     DcMotor raiseArm2;
     DcMotor extendArm;
     CRServo claw1;
     CRServo claw2;
-    CRServo wrist;
+    Servo wrist;
+    Servo mrClamp;
     boolean powerControl = false;
     double powerGiven =0;
     boolean clamp = false;
     int powerButton;
-    CRServo drag1, drag2;
+    Servo drag1;
+    CRServo drag2;
     double wristAngle = 0;
-
-    double armPowerMultiplier = 0.5;
+    double clampPos=.7;
+    boolean clamper=true;
+    double draga = -0.3;
+    Servo mrServo;
+    double mrServox = .5;
+    ColorSensor mrSensor;
 
 
     public void init() {
         //hardware map is for phone
 
-        //    touchSense = hardwareMap.get(DigitalChannel.class, "sensor_digital");
         frontRight = hardwareMap.dcMotor.get("front right");
         frontLeft = hardwareMap.dcMotor.get("front left");
         backRight = hardwareMap.dcMotor.get("back right");
         backLeft = hardwareMap.dcMotor.get("back left");
-        raiseArm1 = hardwareMap.dcMotor.get("raise arm 1");
         raiseArm2 = hardwareMap.dcMotor.get("raise arm 2");
         extendArm = hardwareMap.dcMotor.get("extend arm");
         claw1 = hardwareMap.crservo.get("claw 1");
         claw2 = hardwareMap.crservo.get("claw 2");
-        drag1 = hardwareMap.crservo.get("drag front");
+        drag1 = hardwareMap.servo.get("drag front");
         drag2 = hardwareMap.crservo.get("drag back");
-        wrist = hardwareMap.crservo.get("wrist");
+        wrist=hardwareMap.servo.get("wrist");
+        mrClamp = hardwareMap.servo.get("mrClamp");
+        mrServo = hardwareMap.servo.get("mrServo");
+        mrSensor = hardwareMap.colorSensor.get("mrSensor");
     }
 
-    private void setRaiseArmPower(float armPower, double multiplier){
-        raiseArm1.setPower(armPower*multiplier);
-        raiseArm2.setPower(armPower*multiplier);
-        return;
-    }
 
     public void loop() {
         //              -----STICK VARIABLES-----
@@ -93,8 +89,7 @@ public class TeleOp4 extends OpMode {
 
         backRight.setPower(bRightPower/powerButton);
 
-        raiseArm1.setDirection(DcMotorSimple.Direction.FORWARD);
-        raiseArm2.setDirection(DcMotorSimple.Direction.REVERSE);
+        raiseArm2.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
 
@@ -107,27 +102,47 @@ public class TeleOp4 extends OpMode {
             powerButton =2;
         }
 
-        //              ###DRAG SERVOS###
-        if(gamepad1.x){
-            drag1.setPower(.5);
+
+        //              ###CAPSTONE SERVO###
+        if (gamepad1.b/* && draga > -.5*/){
+            draga  -= 0.01;
         }
-        else if(gamepad1.b){
-            drag1.setPower(-.5);
+        else if (gamepad1.a && draga< .4){
+            draga += 0.01;
         }
-        else{
-            drag1.setPower(0);
+
+        drag1.setPosition(draga);
+        telemetry.addData("Drag servo pos should be", draga);
+        telemetry.addData("what it atually is", drag1.getPosition());
+
+        //             ###COLOR SENSOR SERVO###
+        if (gamepad1.x) {
+            mrServox -=0.01;
         }
-        if(gamepad1.a){
-            drag2.setPower(.5);
+        else if (gamepad1.y){
+            mrServox +=0.01;
         }
-        else if(gamepad1.y){
-            drag2.setPower(-.5);
+
+        mrServo.setPosition(mrServox);
+        telemetry.addData("this is the mrServo", mrServo.getPosition());
+
+
+        //             ###COLOR SENSOR###
+        telemetry.addData("mrSensor values", mrSensor.alpha());
+
+
+        //           ###FOUNDATION SERVO###
+        if (gamepad1.right_bumper && clampPos>.28){
+            clampPos  -= 0.01;
         }
-        else{
-            drag2.setPower(0);
+        else if (gamepad1.left_bumper && clampPos<.90){
+            clampPos += 0.01;
         }
 
 
+        mrClamp.setPosition(clampPos);
+        //telemetry.addData("clampPos = ", clampPos);
+      //  telemetry.update();
 
         //          -----GAME PAD 2-----
 
@@ -143,27 +158,12 @@ public class TeleOp4 extends OpMode {
         else if (!clamp){
             claw1.setPower(0);
             claw2.setPower(0);
+
         }
         if (clamp){
             claw1.setPower(-1);
             claw2.setPower(1);
         }
-
-
-
-        //claw1: 1=open, 0=closed
-        //claw2: 0=open, 1=closed
-
-        /*//open
-        if (gamepad2.y){
-            claw1.setPosition(0.6);
-            claw2.setPosition(0.4);
-        }
-        //close
-       else if (gamepad2.x){
-            claw1.setPosition(0.4);
-            claw2.setPosition(0.6);
-        }*/
 
 
 
@@ -181,49 +181,20 @@ public class TeleOp4 extends OpMode {
         }
 
 
-
-        wrist.setPower(wristAngle);
+    wrist.setPosition(wristAngle);
 
 
         //              ###ARM RAISING###
 
-        // Fast raise arm mode
-        if (gamepad2.right_trigger>0){
-            //If the driver is trying to move the arm up:
-            if (rawRaiseValue > 0) {
-                setRaiseArmPower(rawRaiseValue, 0.6);
-            }
-            //If the driver is trying to move the arm down:
-            else if (rawRaiseValue < 0) {
-                setRaiseArmPower(0.1f, 0.35);
-            }
-            //If the driver is not moving the arm
-            else {
-                setRaiseArmPower(0.23f, 1);
-            }
-        }
-        // Slow raise arm mode
-        else {
-            //If the driver is trying to move the arm up:
-            if (rawRaiseValue > 0) {
-                setRaiseArmPower(rawRaiseValue, 0.35);
-            }
-            //If the driver is trying to move the arm down:
-            else if (rawRaiseValue < 0) {
-                setRaiseArmPower(0f, 1);
-            }
-            //If the driver is not moving the arm
-            else {
-                setRaiseArmPower(0.23f, 1);
-            }
-        }
+        raiseArm2.setPower(-gamepad2.left_stick_y);
+
+
+       // telemetry.update();
 
 
 
 
     }
-
-
 
 
 }

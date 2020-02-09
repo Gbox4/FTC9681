@@ -1,57 +1,39 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.drm.DrmStore;
-import android.util.Log;
-
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import org.firstinspires.ftc.teamcode.pickUpState; //necessary
-import org.firstinspires.ftc.teamcode.timeState; //necessar
 
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.StateMachine; //necessary
-import org.firstinspires.ftc.teamcode.StateMachine.State; //necessary
 import java.util.ArrayList;
-import java.util.Locale;
 
 import static java.lang.Thread.sleep;
 
-@Autonomous(name = "AutoFoundationRight", group = "Iterative OpMode")
+@Autonomous(name = "FoundationRight", group = "Iterative OpMode")
 
 public class AutonomousFoundationRight extends OpMode {
 
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
-    CRServo drag1, drag2;
+    Servo drag1;
+    Servo mrClamp;
     private StateMachine machine;
     ArrayList<Servo> servoPickUp= new ArrayList<Servo>();
-    ArrayList<CRServo> servoDrag= new ArrayList<CRServo>();
     ArrayList<DcMotor> motors = new ArrayList<DcMotor>();
     ArrayList<CRServo> crServos = new ArrayList <CRServo> ();
 
 
 
+    driveState strafeLeft;
+    timeState towardsFoundation;
+    oneServo lowerClamp;
+    oneServo raiseClamp;
     driveState strafeRight;
-    CRServoState lowerClamp;
-    clampDriveState backwards;
-
+    timeState forwardsFoundation1;
+    timeState turnLeft;
+    markerServoState down;
 
 
 
@@ -67,9 +49,8 @@ public class AutonomousFoundationRight extends OpMode {
             backLeft = hardwareMap.dcMotor.get("back left");
             extendArm = hardwareMap.dcMotor.get("extend arm");
 
-            drag1 = hardwareMap.crservo.get("drag front");
-            drag2 = hardwareMap.crservo.get("drag back");
-
+            drag1 = hardwareMap.servo.get("drag front");
+            mrClamp = hardwareMap.servo.get("mrClamp");
             frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
             backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -78,19 +59,26 @@ public class AutonomousFoundationRight extends OpMode {
             motors.add(backLeft);
             motors.add(backRight);
 
-            servoDrag.add(drag1);
-            servoDrag.add(drag2);
         }
 
-        strafeRight = new driveState(40, .3, motors, "strafeRight");
-        lowerClamp = new CRServoState(3000, .25, -.25, servoDrag);
-        backwards = new clampDriveState(-40,.5,motors,"backwards",.5,-.5,servoDrag);
+        strafeLeft = new driveState(16, .3, motors, "strafeRight");
+        towardsFoundation = new timeState (1100, .5, motors, "forward");
+        lowerClamp = new oneServo(2100, 0.28, mrClamp);
+        forwardsFoundation1 = new timeState(4000,  .4, motors, "backward");
+        raiseClamp = new oneServo(1000, .7, mrClamp);
+        strafeRight = new driveState(50,.5,motors,"strafeLeft");
+        turnLeft = new timeState(1000, .5, motors, "turnLeft");
+        down = new markerServoState(1000, -.5, drag1); //may need to change value, hardware changed servo position
 
 
-
-        strafeRight.setNextState(lowerClamp);
-        lowerClamp.setNextState(backwards);
-        backwards.setNextState(null);
+        strafeLeft.setNextState(towardsFoundation);
+        towardsFoundation.setNextState(lowerClamp);
+        lowerClamp.setNextState(forwardsFoundation1);
+        forwardsFoundation1.setNextState(raiseClamp);
+        raiseClamp.setNextState(strafeRight);
+        strafeRight.setNextState(turnLeft);
+        turnLeft.setNextState(down);
+        down.setNextState(null);
 
 
 
@@ -99,7 +87,7 @@ public class AutonomousFoundationRight extends OpMode {
     public void start(){
 
 
-        machine = new StateMachine(strafeRight);
+        machine = new StateMachine(strafeLeft);
 
     }
     @Override

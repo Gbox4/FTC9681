@@ -7,11 +7,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+
 import java.util.ArrayList;
 
-@Autonomous(name = "AutoTest3", group = "Iterative OpMode")
+import static java.lang.Thread.sleep;
 
-public class AutoTest3 extends OpMode {
+@Autonomous(name = "FoundationLeftCenter", group = "Iterative OpMode")
+
+public class FoundationLeftCenter extends OpMode {
 
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
     CRServo drag1, drag2;
@@ -23,9 +26,13 @@ public class AutoTest3 extends OpMode {
 
 
 
-
-    clampDriveState backwards;
-
+    driveState strafeLeft;
+    timeState towardsFoundation;
+    CRServoState2 lowerClamp;
+    clampDriveState forwardsFoundation;
+    CRServoState raiseClamp;
+    driveState strafeRight;
+    timeState forwardsFoundation1;
 
 
 
@@ -56,17 +63,32 @@ public class AutoTest3 extends OpMode {
             servoDrag.add(drag2);
         }
 
-        backwards = new clampDriveState(-40,-.5,motors,"forwards",.5,-.5,servoDrag);
+        strafeLeft = new driveState(16, .3, motors, "strafeRight");
+        towardsFoundation = new timeState (1000, .5, motors, "backward"); //may need to change time
+        lowerClamp = new CRServoState2(2000, -.75, .75, servoDrag);
+        forwardsFoundation1 = new timeState(3000,  .5, motors, "forward");
+
+        //forwardsFoundation = new clampDriveState(28.5,.5,motors,"forwards",-.5,.5,servoDrag);
+        raiseClamp = new CRServoState(1000, .25,-.25, servoDrag);
+        strafeRight = new driveState(46,.5,motors,"strafeLeft");
 
 
-        backwards.setNextState(null);
+
+        strafeLeft.setNextState(towardsFoundation);
+        towardsFoundation.setNextState(lowerClamp);
+        lowerClamp.setNextState(forwardsFoundation1);
+        forwardsFoundation1.setNextState(raiseClamp);
+        raiseClamp.setNextState(strafeRight);
+        strafeRight.setNextState(null);
+
+
 
     }
     @Override
     public void start(){
 
 
-        machine = new StateMachine(backwards);
+        machine = new StateMachine(strafeLeft);
 
     }
     @Override
@@ -84,3 +106,4 @@ public class AutoTest3 extends OpMode {
 
 
 }
+

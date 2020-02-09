@@ -7,11 +7,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+
 import java.util.ArrayList;
 
-@Autonomous(name = "AutoTest4", group = "Iterative OpMode")
+import static java.lang.Thread.sleep;
 
-public class AutoTest4 extends OpMode {
+@Autonomous(name = "FoundationRightCenter", group = "Iterative OpMode")
+
+public class FoundationRightCenter extends OpMode {
 
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
     CRServo drag1, drag2;
@@ -23,9 +26,15 @@ public class AutoTest4 extends OpMode {
 
 
 
-
-    clampDriveState backwards;
-
+    driveState strafeLeft;
+    timeState towardsFoundation;
+    CRServoState2 lowerClamp;
+    clampDriveState forwardsFoundation;
+    CRServoState raiseClamp;
+    driveState strafeRight;
+    timeState backward;
+    driveState strafeRight2;
+    timeState forwardsFoundation1;
 
 
 
@@ -56,17 +65,37 @@ public class AutoTest4 extends OpMode {
             servoDrag.add(drag2);
         }
 
-        backwards = new clampDriveState(-40,.5,motors,"forwards",.5,-.5,servoDrag);
+        strafeLeft = new driveState(16, .3, motors, "strafeLeft");
+        towardsFoundation = new timeState (1000, .5, motors, "backward"); //may need to change time
+        lowerClamp = new CRServoState2(2100, -.5, .5, servoDrag);
+        forwardsFoundation1 = new timeState(3000,  .5, motors, "forward");
+
+        //forwardsFoundation = new clampDriveState(28.5,.5,motors,"forwards",-.5,.5,servoDrag);
+        raiseClamp = new CRServoState(1000, .25,-.25, servoDrag);
+        strafeRight = new driveState(32,.5,motors,"strafeRight");
+        backward = new timeState(1000,.5,motors,"backward");
+        strafeRight2 =new driveState(16,.5,motors,"strafeRight");
 
 
-        backwards.setNextState(null);
+        strafeLeft.setNextState(towardsFoundation);
+        towardsFoundation.setNextState(lowerClamp);
+        lowerClamp.setNextState(forwardsFoundation1);
+        forwardsFoundation1.setNextState(raiseClamp);
+        raiseClamp.setNextState(strafeRight);
+
+
+        strafeRight.setNextState(backward);
+        backward.setNextState(strafeRight2);
+        strafeRight2.setNextState(null);
+
+
 
     }
     @Override
     public void start(){
 
 
-        machine = new StateMachine(backwards);
+        machine = new StateMachine(strafeLeft);
 
     }
     @Override

@@ -18,7 +18,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import org.firstinspires.ftc.teamcode.pickUpState; //necessary
 import org.firstinspires.ftc.teamcode.timeState; //necessar
 
 
@@ -34,25 +33,35 @@ import java.util.Locale;
 
 import static java.lang.Thread.sleep;
 
-@Autonomous(name = "AutoTest2", group = "Iterative OpMode")
+@Autonomous(name = "notFoundationLeft", group = "Iterative OpMode")
 
-public class AutoTest2 extends OpMode {
+public class notFoundationLeft extends OpMode {
 
-    DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
+    DcMotor frontRight, frontLeft, backRight, backLeft, extendArm, raiseArm;
     CRServo drag1, drag2;
+    Servo mrClamp;
     private StateMachine machine;
     ArrayList<Servo> servoPickUp= new ArrayList<Servo>();
     ArrayList<CRServo> servoDrag= new ArrayList<CRServo>();
     ArrayList<DcMotor> motors = new ArrayList<DcMotor>();
     ArrayList<CRServo> crServos = new ArrayList <CRServo> ();
+    ArrayList<CRServo> claws = new ArrayList <CRServo> ();
+    CRServo claw1;
+    CRServo claw2;
 
+    timeState towardsStone;
+    extendArmState extendClaw;
+    extendArmState raiseArm1;
+    CRServoState close;
+    extendArmState retractClaw;
+    extendArmState lowerArm;
+    timeState backToWall;
+    driveState strafeLeft;
+    CRServoState open;
+    oneServo down;
+    driveState strafeRight;
 
-
-
-    clampDriveState backwards;
-
-
-
+    //clampDriveState dragToWall;
 
 
     @Override
@@ -65,9 +74,12 @@ public class AutoTest2 extends OpMode {
             backRight = hardwareMap.dcMotor.get("back right");
             backLeft = hardwareMap.dcMotor.get("back left");
             extendArm = hardwareMap.dcMotor.get("extend arm");
-
+            raiseArm = hardwareMap.dcMotor.get("raise arm");
+            claw1 = hardwareMap.crservo.get("claw 1");
+            claw2 = hardwareMap.crservo.get("claw 2");
             drag1 = hardwareMap.crservo.get("drag front");
             drag2 = hardwareMap.crservo.get("drag back");
+            mrClamp = hardwareMap.servo.get("mrClamp");
 
             frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
             backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -79,19 +91,37 @@ public class AutoTest2 extends OpMode {
 
             servoDrag.add(drag1);
             servoDrag.add(drag2);
+            claws.add(claw1);
+            claws.add(claw2);
         }
 
-        backwards = new clampDriveState(40,-.5,motors,"forwards",.5,-.5,servoDrag);
+        towardsStone = new timeState(1100, .5, motors, "forward");
+        raiseArm1 = new extendArmState(500, 1, raiseArm);
+        extendClaw = new extendArmState(1000, .5, extendArm);
+        close = new CRServoState(500, -1, 1, claws);
+        lowerArm = new extendArmState(500, -1, raiseArm);
+        retractClaw = new extendArmState(1000, -.5, extendArm);
+        backToWall = new timeState (300, .5, motors, "backward");
+        open = new CRServoState(500, 1, -1, claws);
+        down = new oneServo(500, .37, mrClamp);
 
+        towardsStone.setNextState(raiseArm1);
+        raiseArm1.setNextState(extendClaw);
+        extendClaw.setNextState(close);
+        close.setNextState(lowerArm);
+        lowerArm.setNextState(retractClaw);
+        retractClaw.setNextState(backToWall);
+        backToWall.setNextState(open);
+        open.setNextState(down);
+        down.setNextState(null);
 
-        backwards.setNextState(null);
 
     }
     @Override
     public void start(){
 
 
-        machine = new StateMachine(backwards);
+        machine = new StateMachine(towardsStone);
 
     }
     @Override

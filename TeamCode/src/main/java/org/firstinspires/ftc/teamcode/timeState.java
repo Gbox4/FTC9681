@@ -26,7 +26,7 @@ public class timeState implements State {
 
     private State NextState;
 
-    private int Time;
+    int Time;
     ElapsedTime mRuntime = new ElapsedTime();
     boolean reset = true;
 
@@ -87,6 +87,18 @@ public class timeState implements State {
                 leftBack.setPower(Power);
                 rightBack.setPower(-Power);
 
+            }
+            if(Movement == "strafeRight"){
+                leftBack.setPower(-Power);
+                leftFront.setPower(Power);//negative
+                rightBack.setPower(Power); //negative
+                rightFront.setPower(-Power);
+            }
+            if(Movement == "strafeLeft"){
+                leftBack.setPower(Power);
+                leftFront.setPower(-Power);//negative
+                rightBack.setPower(-Power); //negative
+                rightFront.setPower(Power);
             }
             return this;
         }

@@ -11,27 +11,37 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.StateMachine; //necessary
 import org.firstinspires.ftc.teamcode.StateMachine.State; //necessary
 import java.util.ArrayList;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class extendArmState implements State {
 
 
-    DcMotor extendArm;
+public class CRServoState2 implements State {
+
+    Telemetry telemetry;
+
+    CRServo servo1, servo2;
     private double Power;
+    private double Power2;
+    private String Movement;
     private State NextState;
 
-    private int Time;
+    private int totalTime;
     ElapsedTime mRuntime = new ElapsedTime();
+    boolean reset = true;
 
 
-    public extendArmState(int time, double power, DcMotor extend) {
-        Time = time;
-        extendArm = extend;
+    public CRServoState2(int time, double power, double power2, ArrayList<CRServo> CRServos) {
+        totalTime = time;
+        servo1 = CRServos.get(0);
+        servo2 = CRServos.get(1);
 
         Power = power;
+        Power2 = power2;
 
 
     }
@@ -43,25 +53,30 @@ public class extendArmState implements State {
 
     @Override
     public void start() {
-        mRuntime.reset();
+
 
     }
 
     @Override
     public State update() {
 
+        if (reset){
+            mRuntime.reset();
+            reset = false;
+        }
 
-        while (mRuntime.milliseconds() < Time) {
 
-            extendArm.setPower(Power);
+        while (mRuntime.milliseconds() < totalTime) {
 
+
+            servo1.setPower(Power);
+            servo2.setPower(Power2);
             return this;
 
         }
-        if (Time <= mRuntime.milliseconds()) {
-            extendArm.setPower(0);
-            // return NextState;
-        }
+
+
+        // return NextState;
 
 
 
@@ -71,3 +86,4 @@ public class extendArmState implements State {
     }
 
 }
+

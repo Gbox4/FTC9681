@@ -245,14 +245,14 @@ public class GyroTurnCCWByPID implements StateMachine.State {
 //                }else {
 
             if(target < 0) {
-                leftFront.setPower(-power);
-                leftBack.setPower(-power);
+                leftFront.setPower(power);
+                leftBack.setPower(power);
                 rightFront.setPower(power);
                 rightBack.setPower(power);
             }
             else {
-                leftFront.setPower(power);
-                leftBack.setPower(power);
+                leftFront.setPower(-power);
+                leftBack.setPower(-power);
                 rightFront.setPower(-power);
                 rightBack.setPower(-power);
             }

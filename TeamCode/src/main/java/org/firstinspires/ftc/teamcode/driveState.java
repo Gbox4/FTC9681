@@ -146,6 +146,10 @@ public class driveState implements StateMachine.State {
             leftFront.setPower(0);
             rightBack.setPower(0);
             leftBack.setPower(0);
+            rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             return NextState;
         }
     }

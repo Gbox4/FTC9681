@@ -159,7 +159,10 @@ public class clampDriveState implements StateMachine.State {
             leftFront.setPower(0);
             rightBack.setPower(0);
             leftBack.setPower(0);
-
+            rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             servo1.setPower(0);
             servo2.setPower(0);
             return NextState;
