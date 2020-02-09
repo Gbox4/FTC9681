@@ -39,6 +39,7 @@ public class ColorStoneRight extends OpMode {
     timeState backwards2;
     driveState strafeRightAgain;
     timeState wait;
+    extendArmState reachOut2;
 
 
     ArrayList<Servo> servoPickUp= new ArrayList<Servo>();
@@ -61,6 +62,7 @@ public class ColorStoneRight extends OpMode {
         backLeft=hardwareMap.dcMotor.get("back left");
         mrSensor=hardwareMap.colorSensor.get("mrSensor");
         mrServo=hardwareMap.servo.get("mrServo");
+
 
         //claw1=hardwareMap.crservo.get("claw 1");
         //claw2=hardwareMap.crservo.get("claw 2");
@@ -94,7 +96,11 @@ public class ColorStoneRight extends OpMode {
         strafeRight = new clampDriveState(18,.5, motors, "strafeRight", -1, 1, crServos);
         close2 = new CRServoState2(1500, -1, 1, crServos);
         //turnLeft = new timeState(2000, .5, motors, "turnLeft");
-        forward = new timeState(1500, .5, motors, "forward");
+
+        forward = new timeState(7000, .5, motors, "forward");
+        backwards2 = new timeState(5000, .5, motors, "backward");
+        reachOut2 = new extendArmState(2000, -.5, extendArm);
+
         open = new CRServoState(1000, 1, -1, crServos);
         park = new timeState (700, .5, motors, "backward");
 
@@ -125,7 +131,9 @@ public class ColorStoneRight extends OpMode {
 
 
         forward.setNextState(open);
-        open.setNextState(park);
+        open.setNextState(backwards2);
+        backwards2.setNextState(reachOut2);
+        reachOut2.setNextState(park);
         park.setNextState(null);
 
 
@@ -144,7 +152,7 @@ public class ColorStoneRight extends OpMode {
         machine.update();
 
         if (colorState.done) {
-            forward = new timeState(1500+(int)colorState.totalTime, .5, motors, "forward");
+            //forward = new timeState(10000+(int)colorState.totalTime, .5, motors, "forward");
             colorState.done = false;
         }
 
