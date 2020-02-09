@@ -107,7 +107,7 @@ public class TeleOp4 extends OpMode {
         if (gamepad1.b/* && draga > -.5*/){
             draga  -= 0.01;
         }
-        else if (gamepad1.a/* && draga< .43*/){
+        else if (gamepad1.a && draga< .4){
             draga += 0.01;
         }
 
@@ -116,10 +116,10 @@ public class TeleOp4 extends OpMode {
         telemetry.addData("what it atually is", drag1.getPosition());
 
         //             ###COLOR SENSOR SERVO###
-        if (gamepad1.x && mrServox > -.5) {
+        if (gamepad1.x) {
             mrServox -=0.01;
         }
-        else if (gamepad1.y && mrServox<.5){
+        else if (gamepad1.y){
             mrServox +=0.01;
         }
 

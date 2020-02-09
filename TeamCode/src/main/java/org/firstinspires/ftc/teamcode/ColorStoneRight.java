@@ -38,6 +38,7 @@ public class ColorStoneRight extends OpMode {
     timeState backwards;
     timeState backwards2;
     driveState strafeRightAgain;
+    timeState wait;
 
 
     ArrayList<Servo> servoPickUp= new ArrayList<Servo>();
@@ -80,12 +81,13 @@ public class ColorStoneRight extends OpMode {
         crServos.add(claw2);
 
 
-        sensorDown = new oneServo(500, -1, mrServo);
-        strafeLeft = new driveState(28, .3, motors, "strafeLeft");
+        sensorDown = new oneServo(500, 0, mrServo);
+        strafeLeft = new driveState(30, .3, motors, "strafeLeft");
         colorState = new ColorState(motors, mrSensor,"backward","alpha",4500);
-        backwards = new timeState(1000, .5, motors, "backward");
-        colorState2 = new ColorState(motors, mrSensor,"forward","alpha",800);
-        backwards2 = new timeState(400, .5, motors, "backward");
+        wait = new timeState(500, 0, motors, "backward");
+        backwards = new timeState(500, .5, motors, "backward");
+        /*colorState2 = new ColorState(motors, mrSensor,"forward","alpha",800);
+        backwards2 = new timeState(400, .5, motors, "backward");*/
         strafeRightAgain = new driveState(16, .5, motors, "strafeLeft");
         reachOut = new extendArmState(1200, -.5, extendArm);
         close = new CRServoState2(1500,-1,1, crServos);
@@ -106,10 +108,12 @@ public class ColorStoneRight extends OpMode {
 
         sensorDown.setNextState(strafeLeft);
         strafeLeft.setNextState(colorState);
-        colorState.setNextState(backwards);
-        backwards.setNextState(colorState2);
-        colorState2.setNextState(backwards2);
-        backwards2.setNextState(strafeRightAgain);
+        colorState.setNextState(wait);
+        wait.setNextState(backwards);
+        backwards.setNextState(strafeRightAgain);
+
+        /*colorState2.setNextState(backwards2);
+        backwards2.setNextState(strafeRightAgain);*/
         strafeRightAgain.setNextState(reachOut);
         reachOut.setNextState(close);
         close.setNextState(strafeRight);
@@ -117,6 +121,9 @@ public class ColorStoneRight extends OpMode {
        // close2.setNextState(turnLeft);
         //turnLeft.setNextState(forward);
         close2.setNextState(forward);
+
+
+
         forward.setNextState(open);
         open.setNextState(park);
         park.setNextState(null);
@@ -135,6 +142,11 @@ public class ColorStoneRight extends OpMode {
 
 
         machine.update();
+
+        if (colorState.done) {
+            forward = new timeState(1500+(int)colorState.totalTime, .5, motors, "forward");
+            colorState.done = false;
+        }
 
     }
 

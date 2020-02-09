@@ -35,10 +35,11 @@ public class ColorState implements State {
     private State NextState;
     String direction;
     String color;
-    private double totalTime;
+    double totalTime;
     ElapsedTime mRuntime = new ElapsedTime();
     boolean reset = true;
     int time1 = 0;
+    boolean done = false;
 
     public ColorState(ArrayList<DcMotor> motor, ColorSensor colorSensor, String movement, String color1, int time) {
        time1=time;
@@ -99,6 +100,7 @@ public class ColorState implements State {
                 rightBack.setPower(-.5);
                 leftBack.setPower(-.5);
             }*/
+
 
                 return NextState;
             }
@@ -164,6 +166,7 @@ public class ColorState implements State {
                 leftBack.setPower(-.5);
             }*/
 
+                done = true;
                 return NextState;
             }
 

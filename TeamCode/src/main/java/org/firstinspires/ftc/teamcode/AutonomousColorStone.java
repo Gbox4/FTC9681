@@ -82,7 +82,7 @@ public class AutonomousColorStone extends OpMode {
         crServos.add(claw2);
 
         //orward = new timeState (1100, .5, motors, "forward"); //without encoders
-        sensorDown = new oneServo(500, -1, mrServo);
+        sensorDown = new oneServo(500, 0, mrServo);
         strafeLeft = new driveState(30, .9, motors, "strafeLeft"); //before 28
         colorState = new ColorState(motors, mrSensor,"forward","alpha", 4500);
         backwards = new timeState(600, .5, motors, "backward");
