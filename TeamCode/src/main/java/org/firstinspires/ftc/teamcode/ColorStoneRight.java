@@ -21,6 +21,7 @@ public class ColorStoneRight extends OpMode {
     //ModernRoboticsI2cRangeSensor SenseFront, SenseLeft, SenseRight,SenseFront
     ColorSensor mrSensor;
     Servo mrServo;
+    DcMotor raiseArm2;
 
     oneServo sensorDown;
     timeState forward;
@@ -40,6 +41,7 @@ public class ColorStoneRight extends OpMode {
     driveState strafeRightAgain;
     timeState wait;
     extendArmState reachOut2;
+    extendArmState raiseArm;
 
 
     ArrayList<Servo> servoPickUp= new ArrayList<Servo>();
@@ -62,6 +64,7 @@ public class ColorStoneRight extends OpMode {
         backLeft=hardwareMap.dcMotor.get("back left");
         mrSensor=hardwareMap.colorSensor.get("mrSensor");
         mrServo=hardwareMap.servo.get("mrServo");
+        raiseArm2 = hardwareMap.dcMotor.get("raise arm 2");
 
 
         //claw1=hardwareMap.crservo.get("claw 1");
@@ -97,8 +100,12 @@ public class ColorStoneRight extends OpMode {
         close2 = new CRServoState2(1500, -1, 1, crServos);
         //turnLeft = new timeState(2000, .5, motors, "turnLeft");
 
-        forward = new timeState(7000, .5, motors, "forward");
-        backwards2 = new timeState(5000, .5, motors, "backward");
+        forward = new timeState(3500, .5, motors, "forward");
+
+        //TODO: this time needs to be longer:
+        raiseArm = new extendArmState(500, -1, raiseArm2);
+
+        backwards2 = new timeState(1500, .5, motors, "backward");
         reachOut2 = new extendArmState(2000, -.5, extendArm);
 
         open = new CRServoState(1000, 1, -1, crServos);
@@ -130,11 +137,13 @@ public class ColorStoneRight extends OpMode {
 
 
 
-        forward.setNextState(open);
+        forward.setNextState(raiseArm);
+        raiseArm.setNextState(reachOut2);
+        reachOut2.setNextState(open);
         open.setNextState(backwards2);
-        backwards2.setNextState(reachOut2);
-        reachOut2.setNextState(park);
-        park.setNextState(null);
+        backwards2.setNextState(null);
+
+        //park.setNextState(null);
 
 
 
@@ -152,9 +161,11 @@ public class ColorStoneRight extends OpMode {
         machine.update();
 
         if (colorState.done) {
-            //forward = new timeState(10000+(int)colorState.totalTime, .5, motors, "forward");
+            //forward.Time = (int)colorState.totalTime;
+            telemetry.addData("colorTime:",colorState.totalTime);
             colorState.done = false;
         }
+        telemetry.update();
 
     }
 

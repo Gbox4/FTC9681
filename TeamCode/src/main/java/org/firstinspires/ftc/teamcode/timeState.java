@@ -26,7 +26,7 @@ public class timeState implements State {
 
     private State NextState;
 
-    private int Time;
+    int Time;
     ElapsedTime mRuntime = new ElapsedTime();
     boolean reset = true;
 
