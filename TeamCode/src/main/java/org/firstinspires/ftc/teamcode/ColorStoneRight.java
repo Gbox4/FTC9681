@@ -22,6 +22,7 @@ public class ColorStoneRight extends OpMode {
     ColorSensor mrSensor;
     Servo mrServo;
 
+    oneServo sensorDown;
     timeState forward;
     driveState strafeLeft;
     extendArmState reachOut;
@@ -78,7 +79,8 @@ public class ColorStoneRight extends OpMode {
         crServos.add(claw1);
         crServos.add(claw2);
 
-        //orward = new timeState (1100, .5, motors, "forward"); //without encoders
+
+        sensorDown = new oneServo(500, -1, mrServo);
         strafeLeft = new driveState(28, .3, motors, "strafeLeft");
         colorState = new ColorState(motors, mrSensor,"backward","alpha",4500);
         backwards = new timeState(1000, .5, motors, "backward");
@@ -102,6 +104,7 @@ public class ColorStoneRight extends OpMode {
         //let go
 
 
+        sensorDown.setNextState(strafeLeft);
         strafeLeft.setNextState(colorState);
         colorState.setNextState(backwards);
         backwards.setNextState(colorState2);
@@ -125,7 +128,7 @@ public class ColorStoneRight extends OpMode {
     public void start(){
 
 
-        machine = new StateMachine(strafeLeft);
+        machine = new StateMachine(sensorDown);
     }
     @Override
     public void loop()  {

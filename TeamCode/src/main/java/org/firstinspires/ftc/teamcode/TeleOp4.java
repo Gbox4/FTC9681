@@ -31,7 +31,7 @@ public class TeleOp4 extends OpMode {
     Servo drag1;
     CRServo drag2;
     double wristAngle = 0;
-    double clampPos=.5;
+    double clampPos=.7;
     boolean clamper=true;
     double draga = -0.3;
     Servo mrServo;
@@ -115,7 +115,7 @@ public class TeleOp4 extends OpMode {
         telemetry.addData("Drag servo pos should be", draga);
         telemetry.addData("what it atually is", drag1.getPosition());
 
-        //             ###
+        //             ###COLOR SENSOR SERVO###
         if (gamepad1.x && mrServox > -.5) {
             mrServox -=0.01;
         }
@@ -125,7 +125,11 @@ public class TeleOp4 extends OpMode {
 
         mrServo.setPosition(mrServox);
         telemetry.addData("this is the mrServo", mrServo.getPosition());
+
+
+        //             ###COLOR SENSOR###
         telemetry.addData("mrSensor values", mrSensor.alpha());
+
 
         //           ###FOUNDATION SERVO###
         if (gamepad1.right_bumper && clampPos>.28){

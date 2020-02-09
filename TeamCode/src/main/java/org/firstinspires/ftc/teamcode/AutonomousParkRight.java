@@ -16,14 +16,11 @@ import static java.lang.Thread.sleep;
 
 public class AutonomousParkRight extends OpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
-    //CRServo claw1, claw2;
-    CRServo drag1, drag2;
-    // Servo /*pickUp1, pickUp2,*/ drag1, drag2;
-    //  ModernRoboticsI2cRangeSensor SenseFront, SenseLeft, SenseRight,SenseFront2;// not sure which ones will be used
+    Servo drag1;
+
 
     driveState rightStrafe1;
 
-    CRServoState up;
     timeState timeState;
     private StateMachine machine;
 
@@ -34,7 +31,6 @@ public class AutonomousParkRight extends OpMode {
     ArrayList<CRServo> servoDrag= new ArrayList<CRServo>();
     ArrayList<DcMotor> motors = new ArrayList<DcMotor>();
     ArrayList<CRServo> crServos = new ArrayList <CRServo> ();
-    //ArrayList<ModernRoboticsI2cRangeSensor> mrrs = new ArrayList<ModernRoboticsI2cRangeSensor>();
 
 
     @Override
@@ -45,12 +41,10 @@ public class AutonomousParkRight extends OpMode {
         backRight=hardwareMap.dcMotor.get("back right");
         backLeft=hardwareMap.dcMotor.get("back left");
 
-        //claw1=hardwareMap.crservo.get("claw 1");
-        //claw2=hardwareMap.crservo.get("claw 2");
         extendArm=hardwareMap.dcMotor.get("extend arm");
 
-        drag1= hardwareMap.crservo.get("drag front");
-        drag2= hardwareMap.crservo.get ("drag back");
+        drag1= hardwareMap.servo.get("drag front");
+
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -59,9 +53,6 @@ public class AutonomousParkRight extends OpMode {
         motors.add(frontRight);
         motors.add(backLeft);
         motors.add(backRight);
-
-        servoDrag.add(drag1);
-        servoDrag.add(drag2);
 
 
         rightStrafe1 = new driveState(40, .5, motors, "strafeRight");
@@ -76,7 +67,6 @@ public class AutonomousParkRight extends OpMode {
     @Override
     public void start(){
 
-        //machine = new StateMachine(down);
         machine = new StateMachine(timeState);
 
     }

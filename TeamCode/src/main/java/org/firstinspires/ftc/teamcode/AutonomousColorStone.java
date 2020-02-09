@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "AutoColorStone", group = "Iterative OpMode")
+@Autonomous(name = "ColorStoneLeft", group = "Iterative OpMode")
 
 public class AutonomousColorStone extends OpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
@@ -108,6 +108,7 @@ public class AutonomousColorStone extends OpMode {
         //let go
 
 
+        sensorDown.setNextState(strafeLeft);
         strafeLeft.setNextState(colorState);
         colorState.setNextState(backwards);
         backwards.setNextState(colorState2);
@@ -132,7 +133,7 @@ public class AutonomousColorStone extends OpMode {
     public void start(){
 
 
-        machine = new StateMachine(strafeLeft);
+        machine = new StateMachine(sensorDown);
     }
     @Override
     public void loop()  {

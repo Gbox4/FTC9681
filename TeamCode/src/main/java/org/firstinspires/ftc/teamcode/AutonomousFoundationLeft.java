@@ -71,7 +71,7 @@ public class AutonomousFoundationLeft extends OpMode {
         lowerClamp = new oneServo(2100, 0.28, mrClamp);
         forwardsFoundation1 = new timeState(4000,  .4, motors, "backward");
         turnLeft = new timeState(1000, .5, motors, "turnLeft");
-        down = new markerServoState(1000, -.5, drag1);
+        down = new markerServoState(1000, -.5, drag1); //may need to change value, hardware changed servo position
         raiseClamp = new oneServo(1000, .7, mrClamp);
         strafeRight = new driveState(50,.5,motors,"strafeRight");
 
