@@ -14,6 +14,7 @@ import java.util.ArrayList;
 @Autonomous(name = "AutoColorStoneRight", group = "Iterative OpMode")
 
 public class ColorStoneRight extends OpMode {
+    //Motor Declarations
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
     CRServo claw1, claw2;
     ColorSensor cSensor;
@@ -22,7 +23,7 @@ public class ColorStoneRight extends OpMode {
 
     private StateMachine machine;
 
-    //In order of execution
+    //State machine declarations (In order of execution)
     oneServo sensorDown;
     driveState strafeLeft;
     ColorState colorState;
@@ -34,6 +35,7 @@ public class ColorStoneRight extends OpMode {
 
     clampDriveState strafeRight;
     CRServoState2 closeClamp2;
+    timeState wait2;
     timeState forward;
 
     extendArmState raiseArm;
@@ -93,14 +95,14 @@ public class ColorStoneRight extends OpMode {
         closeClamp = new CRServoState2(1500,-1,1, crServos);
         strafeRight = new clampDriveState(18,.5, motors, "strafeRight", -1, 1, crServos);
         closeClamp2 = new CRServoState2(1500, -1, 1, crServos);
-
-        forward = new timeState(3500, .5, motors, "forward");
+        wait2 = new timeState(500, 0, motors, "backward");
+        forward = new timeState(0, .5, motors, "forward");
 
         //TODO: this time needs to be adjusted:
         raiseArm = new extendArmState(500, -1, raiseArmMotor);
         reachOut2 = new extendArmState(2000, -.5, extendArm);
         open = new CRServoState(1000, 1, -1, crServos);
-        backwards2 = new timeState(1500, .5, motors, "backward");
+        backwards2 = new timeState(0, .5, motors, "backward");
 
 
 
@@ -120,7 +122,8 @@ public class ColorStoneRight extends OpMode {
         reachOut.setNextState(closeClamp);
         closeClamp.setNextState(strafeRight);
 
-        strafeRight.setNextState(closeClamp2);
+        strafeRight.setNextState(wait2);
+        wait2.setNextState(closeClamp2);
         closeClamp2.setNextState(forward);
         forward.setNextState(raiseArm);
 
@@ -146,7 +149,9 @@ public class ColorStoneRight extends OpMode {
         machine.update();
 
         if (colorState.done) {
-            //forward.Time = (int)colorState.totalTime;
+            //TODO: Adjust this value based on distance from first block to bridge
+            forward.Time = (int)colorState.totalTime;
+            backwards2.Time = (int)colorState.totalTime;
             telemetry.addData("colorTime:",colorState.totalTime);
             colorState.done = false;
         }

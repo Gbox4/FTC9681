@@ -87,20 +87,13 @@ public class ColorState implements State {
                 }
                 return this;
             } else {
-                totalTime = mRuntime.milliseconds(); //sees block
+                totalTime = mRuntime.milliseconds();
                 rightFront.setPower(0);
                 leftFront.setPower(0);
                 rightBack.setPower(0);
                 leftBack.setPower(0);
-                // return NextState;
-                //  mRuntime.reset();
-           /* while (mRuntime.milliseconds() < totalTime) {
-                rightFront.setPower(-.5);
-                leftFront.setPower(-.5);
-                rightBack.setPower(-.5);
-                leftBack.setPower(-.5);
-            }*/
 
+                done = true;
 
                 return NextState;
             }
@@ -120,19 +113,11 @@ public class ColorState implements State {
                 }
                 return this;
             } else {
-                totalTime = mRuntime.milliseconds(); //sees block
+                totalTime = mRuntime.milliseconds();
                 rightFront.setPower(0);
                 leftFront.setPower(0);
                 rightBack.setPower(0);
                 leftBack.setPower(0);
-                // return NextState;
-                //  mRuntime.reset();
-           /* while (mRuntime.milliseconds() < totalTime) {
-                rightFront.setPower(-.5);
-                leftFront.setPower(-.5);
-                rightBack.setPower(-.5);
-                leftBack.setPower(-.5);
-            }*/
 
                 return NextState;
             }
@@ -152,21 +137,12 @@ public class ColorState implements State {
                 }
                 return this;
             } else {
-                totalTime = mRuntime.milliseconds(); //sees block
+                totalTime = mRuntime.milliseconds();
                 rightFront.setPower(0);
                 leftFront.setPower(0);
                 rightBack.setPower(0);
                 leftBack.setPower(0);
-                // return NextState;
-                //  mRuntime.reset();
-           /* while (mRuntime.milliseconds() < totalTime) {
-                rightFront.setPower(-.5);
-                leftFront.setPower(-.5);
-                rightBack.setPower(-.5);
-                leftBack.setPower(-.5);
-            }*/
 
-                done = true;
                 return NextState;
             }
 
