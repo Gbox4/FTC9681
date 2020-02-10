@@ -34,6 +34,7 @@ public class ColorStoneRight extends OpMode {
     CRServoState2 closeClamp;
 
     clampDriveState strafeRight;
+    //TODO: What does closeclamp2 do?
     CRServoState2 closeClamp2;
     timeState wait2;
     timeState forward;
@@ -41,7 +42,16 @@ public class ColorStoneRight extends OpMode {
     extendArmState raiseArm;
     extendArmState reachOut2;
     CRServoState open;
+    extendArmState retractArm;
     timeState backwards2;
+
+    //TODO: THis part is completely untested:
+    ColorState colorState2;
+    timeState wait3;
+    timeState backwards3;
+    driveState strafeLeft3;
+    extendArmState reachOut3;
+    CRServoState2 closeClamp3;
 
 
     ArrayList<Servo> servoPickUp= new ArrayList<Servo>();
@@ -102,7 +112,16 @@ public class ColorStoneRight extends OpMode {
         raiseArm = new extendArmState(500, -1, raiseArmMotor);
         reachOut2 = new extendArmState(2000, -.5, extendArm);
         open = new CRServoState(1000, 1, -1, crServos);
+        retractArm = new extendArmState(4000, .5, extendArm);
         backwards2 = new timeState(0, .5, motors, "backward");
+
+        //TODO: Also untested
+        colorState2 = new ColorState(motors, cSensor,"backward","alpha",4500);
+        wait3 = new timeState(500, 0, motors, "backward");
+        backwards3 = new timeState(500, .5, motors, "backward");
+        strafeLeft3 = new driveState(16, .5, motors, "strafeLeft");
+        reachOut3 = new extendArmState(1200, -.5, extendArm);
+        closeClamp3 = new CRServoState2(1500,-1,1, crServos);
 
 
 
@@ -129,8 +148,17 @@ public class ColorStoneRight extends OpMode {
 
         raiseArm.setNextState(reachOut2);
         reachOut2.setNextState(open);
-        open.setNextState(backwards2);
-        backwards2.setNextState(null);
+        open.setNextState(retractArm);
+        retractArm.setNextState(backwards2);
+        backwards2.setNextState(colorState2);
+
+        //TODO: Untested part again:
+        colorState2.setNextState(wait3);
+        wait3.setNextState(backwards3);
+        backwards3.setNextState(strafeLeft3);
+        strafeLeft3.setNextState(reachOut3);
+        reachOut3.setNextState(closeClamp3);
+        closeClamp3.setNextState(null);
 
 
 
