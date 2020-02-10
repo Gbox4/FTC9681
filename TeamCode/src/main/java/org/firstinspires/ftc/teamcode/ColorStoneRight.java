@@ -150,7 +150,7 @@ public class ColorStoneRight extends OpMode {
 
         if (colorState.done) {
             //TODO: Adjust this value based on distance from first block to bridge
-            forward.Time = (int)colorState.totalTime;
+            forward.Time = (int)colorState.totalTime+1500;
             backwards2.Time = (int)colorState.totalTime;
             telemetry.addData("colorTime:",colorState.totalTime);
             colorState.done = false;
