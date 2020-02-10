@@ -98,19 +98,13 @@ public class ColorStoneRight extends OpMode {
         wait2 = new timeState(500, 0, motors, "backward");
         forward = new timeState(0, .5, motors, "forward");
 
-        //TODO: this time needs to be adjusted:
-        raiseArm = new extendArmState(500, -1, raiseArmMotor);
+        //TODO: this time needs to be adjusted. also is power 1 or -1?
+        raiseArm = new extendArmState(1000, -1, raiseArmMotor);
         reachOut2 = new extendArmState(2000, -.5, extendArm);
         open = new CRServoState(1000, 1, -1, crServos);
-        backwards2 = new timeState(0, .5, motors, "backward");
+        backwards2 = new timeState(1500, .5, motors, "backward");
 
 
-
-
-        //strafe right 18
-        //180 degree turn
-        //forward 2500
-        //let go
 
 
         sensorDown.setNextState(strafeLeft);
@@ -151,7 +145,6 @@ public class ColorStoneRight extends OpMode {
         if (colorState.done) {
             //TODO: Adjust this value based on distance from first block to bridge
             forward.Time = (int)colorState.totalTime+1500;
-            backwards2.Time = (int)colorState.totalTime;
             telemetry.addData("colorTime:",colorState.totalTime);
             colorState.done = false;
         }
