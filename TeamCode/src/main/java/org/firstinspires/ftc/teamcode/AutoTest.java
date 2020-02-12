@@ -7,13 +7,12 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "AutoColorStoneRight", group = "Iterative OpMode")
+@Autonomous(name = "AutoTest", group = "Iterative OpMode")
 
-public class ColorStoneRight extends OpMode {
+public class AutoTest extends OpMode {
     //Motor Declarations
     DcMotor frontRight, frontLeft, backRight, backLeft, extendArm;
     CRServo claw1, claw2;
@@ -41,7 +40,6 @@ public class ColorStoneRight extends OpMode {
     extendArmState raiseArm;
     extendArmState reachOut2;
     CRServoState open;
-    extendArmState lowerArm;
     timeState backwards2;
 
 
@@ -103,33 +101,12 @@ public class ColorStoneRight extends OpMode {
         raiseArm = new extendArmState(1000, 1, raiseArmMotor);
         reachOut2 = new extendArmState(2000, -.5, extendArm);
         open = new CRServoState(1000, 1, -1, crServos);
-        lowerArm = new extendArmState(800, -1, raiseArmMotor);
         backwards2 = new timeState(1500, .5, motors, "backward");
 
 
 
 
-        sensorDown.setNextState(strafeLeft);
-        strafeLeft.setNextState(colorState);
-        colorState.setNextState(wait);
-        wait.setNextState(backwards);
-        backwards.setNextState(strafeLeft2);
-        strafeLeft2.setNextState(reachOut);
-        reachOut.setNextState(closeClamp);
-        closeClamp.setNextState(strafeRight);
-
-        strafeRight.setNextState(wait2);
-        wait2.setNextState(closeClamp2);
-        closeClamp2.setNextState(forward);
-        forward.setNextState(raiseArm);
-
-        raiseArm.setNextState(reachOut2);
-        reachOut2.setNextState(open);
-        open.setNextState(lowerArm);
-        lowerArm.setNextState(backwards2);
-        backwards2.setNextState(null);
-
-
+        raiseArm.setNextState(null);
 
 
     }
@@ -137,7 +114,7 @@ public class ColorStoneRight extends OpMode {
     public void start(){
 
 
-        machine = new StateMachine(sensorDown);
+        machine = new StateMachine(raiseArm);
     }
     @Override
     public void loop()  {
